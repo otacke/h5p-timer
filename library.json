@@ -1,0 +1,18 @@
+{
+  "title": "Timer",
+  "contentType": "Utility",  
+  "machineName": "H5P.Timer",
+  "majorVersion": 0,
+  "minorVersion": 1,
+  "patchVersion": 0,
+  "runnable": 0,
+  "coreApi": {
+    "majorVersion": 1,
+    "minorVersion": 3
+  },
+  "author": "Oliver Tacke",
+  "license": "WTFPL",
+  "preloadedJs": [
+    {"path": "scripts/timer.js"}
+  ]
+}
