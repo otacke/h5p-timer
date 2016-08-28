@@ -1,6 +1,6 @@
 H5P Timer
 ==========
-General purpose timer that can be used by interactions.
+General purpose timer that can be used by other H5P libraries.
 
 ## License
 
