@@ -1,7 +1,9 @@
 var H5P = H5P || {};
 
 /**
- * Timer
+ * H5P-Timer
+ *
+ * General purpose timer that can be used by other H5P libraries.
  *
  * TODO: something like "notifyAfterPlaying(milliSeconds, callback, params)"
  * TODO: something like "notifyEvery(milliSeconds, callback, params)"
@@ -107,6 +109,7 @@ H5P.Timer = (function ($) {
       if (status !== Timer.PLAYING) {
         return;
       }
+      
       cacheMilliSeconds += update(Timer.PAUSED);
       playingMilliSeconds = cacheMilliSeconds;
       startDate = undefined;
