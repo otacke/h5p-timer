@@ -3,15 +3,17 @@ var H5P = H5P || {};
 /**
  * Timer
  *
- * TODO: make some methods private, clean the code
- * TODO: something like "callMeAfterPlaying(milliSeconds, callback, params)"
- * TODO: something like "callMeEvery(milliSeconds, callback, params)"
+ * TODO: something like "notifyAfterPlaying(milliSeconds, callback, params)"
+ * TODO: something like "notifyEvery(milliSeconds, callback, params)"
  *
  * @param {H5P.jQuery} $
  */
 H5P.Timer = (function ($) {
   /**
-   * @class H5P.Timer
+   * Create a timer.
+   * @constructor
+   *
+   * @param interval - The update interval.
    */
   function Timer(interval) {
     var self = this;
@@ -20,53 +22,40 @@ H5P.Timer = (function ($) {
       interval = 100;
     }
 
-    var timerStatus = Timer.STOPPED;
+    var status = Timer.STOPPED;
     
-    // TODO: There's probably a way to use only two variables for the timing...
     var cacheMilliSeconds = 0;
-    var lapMilliSeconds = 0;
-    var totalMilliSeconds = 0;
+    var playingMilliSeconds = 0;
 
-    // TODO: There's probably a way to use only two variables for the dates...
-    var firstDate;
-    var lastDate;
-    var startDate;
+    var firstDate, startDate, lastDate;
 
-    var timerLoop;
-    
+    var loop;
+
     /**
-     * return the timer status
+     * Get the timer status.
      *
-     * @returns {Number} timer status
+     * @return {Number} The timer status.
      */
     this.getStatus = function() {
-      return timerStatus;
+      return status;
     }
 
     /**
-     * get the time the timer was playing
+     * Get the time the timer was playing so far.
      *
-     * @returns {Number} time played
+     * @return {Number} The time played.
      */
     this.getPlayingTime = function() {
-      if (timerStatus === Timer.PLAYING) {
-        return lapMilliSeconds;
-      }
-      if (timerStatus === Timer.PAUSED) {
-        return cacheMilliSeconds;
-      }
-      if (timerStatus === Timer.STOPPED) {
-        return totalMilliSeconds;
-      }      
+      return playingMilliSeconds;
     }
 
     /**
-     * get the total running time (until stopped)
+     * Get the total running time from start() (until stop()).
      *
-     * @returns {Number} total running time
+     * @return {Number} The total running time.
      */
     this.getTotalTime = function() {
-      if (timerStatus !== Timer.STOPPED) {
+      if (status !== Timer.STOPPED) {
         return (new Date().getTime() - startDate);
       } else {
         return lastDate.getTime() - firstDate;
@@ -74,88 +63,104 @@ H5P.Timer = (function ($) {
     }
 
     /**
-     * start the timer
+     * Initialize the timer.
+     */
+    var init = function() {
+      cacheMilliSeconds = 0;
+      playingMilliSeconds = 0;
+      firstDate = undefined;
+    }
+
+    /**
+     * Start the timer.
      */
     this.play = function() {
-      if (timerStatus === Timer.PLAYING) {
+      if (status === Timer.PLAYING) {
         return;
       }
-      if (timerStatus === Timer.STOPPED) {
-        cacheMilliSeconds = 0;
-        lapMilliSeconds = 0;
-        totalMilliSeconds = 0;
-        firstDate = undefined;
+      if (status === Timer.STOPPED) {
+        init();
       }
       if (!firstDate) {
         firstDate = new Date();
       }
       startDate = new Date();
-      timerStatus = Timer.PLAYING;
+      status = Timer.PLAYING;
       update(Timer.PLAYING);
     }
 
     /**
-     * pause the timer
+     * Pause the timer.
      */
     this.pause = function() {
-      if (timerStatus !== Timer.PLAYING) {
+      if (status !== Timer.PLAYING) {
         return;
       }
       cacheMilliSeconds += update(Timer.PAUSED);
+      playingMilliSeconds = cacheMilliSeconds;
       startDate = undefined;
-      timerStatus = Timer.PAUSED;      
+      status = Timer.PAUSED;      
     }
 
     /**
-     * stop the timer
+     * Stop the timer.
      */    
     this.stop = function() {
-      if (timerStatus !== Timer.PLAYING) {
+      if (status !== Timer.PLAYING) {
         return;
       }        
       
-      totalMilliSeconds = cacheMilliSeconds + update(Timer.STOPPED);
+      playingMilliSeconds = cacheMilliSeconds + update(Timer.STOPPED);
       lastDate = new Date();
-      timerStatus = Timer.STOPPED;      
+      status = Timer.STOPPED;      
     }
     
    /**
-     * Update the timer until final call
+     * Update the timer until final call.
      *
-     * @private
-     * @param {Number} target status
+     * @param {Number} targetStatus - The target Status.
      */
     var update = function (targetStatus) {
       var currentMilliSeconds = (new Date().getTime() - startDate);
-      lapMilliSeconds = cacheMilliSeconds + currentMilliSeconds;
+      playingMilliSeconds = cacheMilliSeconds + currentMilliSeconds;
 
       if (targetStatus === Timer.PLAYING) {
-        timerLoop = setTimeout(function () {
+        loop = setTimeout(function () {
           update(Timer.PLAYING);
         }, interval);        
       } else {
-        clearTimeout(timerLoop);
+        clearTimeout(loop);
         return currentMilliSeconds;
       }
     }
     
     /**
-     * humanize time down to tenth of seconds
+     * Humanize time down to tenth of seconds.
      *
-     * @param {Number} milliSeconds
-     * @returns {String} humanized Timer
+     * @param {Number} milliSeconds - The time in milliSeconds.
+     * @return {String} The humanized time.
      */
     var humanize = function(milliSeconds) {
     }
     
     /**
-     * humanize time down to tenth of seconds
+     * Dehumanize time from down to tenth of seconds.
      *
-     * @param {Number} milliSeconds
-     * @returns {String} humanized Timer
+     * @param {String} timecode - The humanized time.
+     * @return {Number} The time in milliSeconds.
      */
-    var humanize = function(milliSeconds) {
-    }    
+    var humanize = function(timecode) {
+    }
+    
+    /**
+     * Check if variable of type Number.
+     *
+     * @param {Object} test - The test object.
+     * @return {boolean} True or False.
+     */
+    var isNumber = function(test) {
+      return !isNaN(parseFloat(test))
+    }
   }
   
   // Timer states
@@ -165,6 +170,12 @@ H5P.Timer = (function ($) {
   Timer.PLAYING = 1;
   /** @constant {Number} */
   Timer.PAUSED = 2;
+  
+  // Timer direction
+  /** @constant {Number} */
+  Timer.FORWARD = 1;
+  /** @constant {Number} */
+  Timer.BACKWARD = -1;
   
   return Timer;  
 })(H5P.jQuery);
