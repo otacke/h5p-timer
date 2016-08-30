@@ -5,9 +5,13 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: something like "notifyAfterPlaying(milliSeconds, callback, params)"
- * TODO: something like "notifyEvery(milliSeconds, callback, params)"
+ * TODO: rewrite update & counting mechanics
+ * TODO: differentiate between clock time, playing time and running time
  * TODO: countdown feature
+ * TODO: notifications class
+ * TODO: something like "notifyAfter(milliSeconds, callback, params)"
+ * TODO: something like "notifyIn(milliSeconds, callback, params)"
+ * TODO: something like "notifyEvery(milliSeconds, callback, params)"
  *
  * @param {H5P.jQuery} $
  */
