@@ -5,8 +5,7 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: rewrite update & counting mechanics
- * TODO: differentiate between clock time, playing time and running time
+ * TODO: clean code
  * TODO: countdown feature
  * TODO: notifications class
  * TODO: something like "notifyAfter(milliSeconds, callback, params)"
@@ -26,17 +25,16 @@ H5P.Timer = (function ($) {
     var self = this;
 
     if (!interval) {
-      interval = Timer.DEFAULT_INTERVAL;
+      var interval = Timer.DEFAULT_INTERVAL;
     }
 
-    var status = Timer.STOPPED;
-
-    var cacheMilliSeconds = 0;
-    var playingMilliSeconds = 0;
+    var clockTimeMilliSeconds, playingTimeMilliSeconds;
 
     var firstDate, startDate, lastDate;
 
     var loop;
+    
+    var status = Timer.STOPPED;    
 
     /**
      * Get the timer status.
@@ -48,12 +46,21 @@ H5P.Timer = (function ($) {
     }
 
     /**
+     * Get the time that's on the clock.
+     *
+     * @return {Number} The time on the clock.
+     */
+    this.getClockTime = function() {
+      return clockTimeMilliSeconds;
+    }
+
+    /**
      * Get the time the timer was playing so far.
      *
      * @return {Number} The time played.
      */
     this.getPlayingTime = function() {
-      return playingMilliSeconds;
+      return playingTimeMilliSeconds;
     }
 
     /**
@@ -61,9 +68,9 @@ H5P.Timer = (function ($) {
      *
      * @return {Number} The total running time.
      */
-    this.getTotalTime = function() {
+    this.getRunningTime = function() {
       if (status !== Timer.STOPPED) {
-        return (new Date().getTime() - startDate);
+        return (new Date().getTime() - firstDate);
       } else {
         return lastDate.getTime() - firstDate;
       }
@@ -74,17 +81,16 @@ H5P.Timer = (function ($) {
      *
      * @param {Number} time - The time in milliSeconds or timecode.
      */
-    this.setTime = function(time) {
-      if (status === Timer.STOPPED) {
-      }
+    this.setClockTime = function(time) {
+      clockTimeMilliSeconds = time;
     }
 
     /**
      * Initialize the timer.
      */
-    var init = function() {
-      cacheMilliSeconds = 0;
-      playingMilliSeconds = 0;
+    var reset = function() {
+      clockTimeMilliSeconds = 0;
+      playingTimeMilliSeconds = 0;
       firstDate = undefined;
     }
 
@@ -96,7 +102,7 @@ H5P.Timer = (function ($) {
         return;
       }
       if (status === Timer.STOPPED) {
-        init();
+        reset();
       }
       if (!firstDate) {
         firstDate = new Date();
@@ -113,10 +119,6 @@ H5P.Timer = (function ($) {
       if (status !== Timer.PLAYING) {
         return;
       }
-      
-      cacheMilliSeconds += update(Timer.PAUSED);
-      playingMilliSeconds = cacheMilliSeconds;
-      startDate = undefined;
       status = Timer.PAUSED;
     }
 
@@ -124,32 +126,31 @@ H5P.Timer = (function ($) {
      * Stop the timer.
      */
     this.stop = function() {
-      if (status !== Timer.PLAYING) {
+      if (status !== Timer.STOPPED) {
+        lastDate = new Date();
+        status = Timer.STOPPED;
+      }          
+    }
+
+    /**
+     * Update the timer until Timer.STOPPED.
+     */
+    var update = function () {
+      if ((status === Timer.STOPPED)) {
+        clearTimeout(loop);
         return;
       }
 
-      playingMilliSeconds = cacheMilliSeconds + update(Timer.STOPPED);
-      lastDate = new Date();
-      status = Timer.STOPPED;
-    }
-
-   /**
-     * Update the timer until final call.
-     *
-     * @param {Number} targetStatus - The target Status.
-     */
-    var update = function (targetStatus) {
-      var currentMilliSeconds = (new Date().getTime() - startDate);
-      playingMilliSeconds = cacheMilliSeconds + currentMilliSeconds;
-
-      if (targetStatus === Timer.PLAYING) {
-        loop = setTimeout(function () {
-          update(Timer.PLAYING);
-        }, interval);
-      } else {
-        clearTimeout(loop);
-        return currentMilliSeconds;
+      if (status === Timer.PLAYING) {
+        var currentMilliSeconds = (new Date().getTime() - startDate);          
+        clockTimeMilliSeconds   += currentMilliSeconds;
+        playingTimeMilliSeconds += currentMilliSeconds;
       }
+      startDate = new Date();
+
+      loop = setTimeout(function () {
+        update();
+      }, interval);
     }
 
     /**
@@ -167,7 +168,7 @@ H5P.Timer = (function ($) {
      * @param {String} timecode - The humanized time.
      * @return {Number} The time in milliSeconds.
      */
-    var humanize = function(timecode) {
+    var dehumanize = function(timecode) {
     }
   }
 
