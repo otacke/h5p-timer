@@ -5,7 +5,6 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: countdown feature
  * TODO: humanize() and dehumanize()
  * TODO: notifications class
  * TODO: something like "notifyAfter(milliSeconds, callback, params)"
@@ -40,6 +39,9 @@ H5P.Timer = (function ($) {
 
     // timer status    
     var status = Timer.STOPPED;
+
+    // indicate counting direction
+    var mode;
 
     /**
      * Get the timer status.
@@ -76,7 +78,8 @@ H5P.Timer = (function ($) {
     this.getRunningTime = function() {
       if (status !== Timer.STOPPED) {
         return (new Date().getTime() - firstDate);
-      } else {
+      }
+      else {
         return lastDate.getTime() - firstDate;
       }
     }
@@ -94,18 +97,23 @@ H5P.Timer = (function ($) {
      * Initialize the timer.
      */
     var reset = function() {
-      clockTimeMilliSeconds = 0;
+      if ((mode === Timer.FORWARD) || (!clockTimeMilliSeconds)) {
+        clockTimeMilliSeconds = 0;
+      }
       playingTimeMilliSeconds = 0;
       firstDate = undefined;
     }
 
     /**
      * Start the timer.
+     *
+     * @param {Number} direction - Indicate counting up or down.
      */
-    this.play = function() {
+    this.play = function(direction = Timer.FORWARD) {
       if (status === Timer.PLAYING) {
         return;
       }
+      mode = direction;
       if (status === Timer.STOPPED) {
         reset();
       }
@@ -141,15 +149,21 @@ H5P.Timer = (function ($) {
      * Update the timer until Timer.STOPPED.
      */
     var update = function () {
+      // stop because requested
       if (status === Timer.STOPPED) {
         clearTimeout(loop);
         return;
       }
 
+      //stop because countdown reaches 0
+      if ((mode === Timer.BACKWARD) && (clockTimeMilliSeconds <= 0)) {
+        self.stop();
+        return;
+      }
+
       if (status === Timer.PLAYING) {
-        // TODO: Check if this is better than using interval as delta
         var currentMilliSeconds = (new Date().getTime() - startDate);
-        clockTimeMilliSeconds   += currentMilliSeconds;
+        clockTimeMilliSeconds   += currentMilliSeconds * mode;
         playingTimeMilliSeconds += currentMilliSeconds;
       }
       startDate = new Date();
