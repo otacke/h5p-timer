@@ -5,8 +5,8 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: clean code
  * TODO: countdown feature
+ * TODO: humanize() and dehumanize()
  * TODO: notifications class
  * TODO: something like "notifyAfter(milliSeconds, callback, params)"
  * TODO: something like "notifyIn(milliSeconds, callback, params)"
@@ -25,16 +25,21 @@ H5P.Timer = (function ($) {
     var self = this;
 
     if (!interval) {
+      // determines the timing precision (kind of)
       var interval = Timer.DEFAULT_INTERVAL;
     }
 
+    // time on clock and the time the clock has run
     var clockTimeMilliSeconds, playingTimeMilliSeconds;
 
+    // indicators for total running time of the timer
     var firstDate, startDate, lastDate;
 
+    // update loop
     var loop;
-    
-    var status = Timer.STOPPED;    
+
+    // timer status    
+    var status = Timer.STOPPED;
 
     /**
      * Get the timer status.
@@ -64,7 +69,7 @@ H5P.Timer = (function ($) {
     }
 
     /**
-     * Get the total running time from start() (until stop()).
+     * Get the total running time from play() until stop().
      *
      * @return {Number} The total running time.
      */
@@ -79,7 +84,7 @@ H5P.Timer = (function ($) {
     /**
      * Set the starting time.
      *
-     * @param {Number} time - The time in milliSeconds or timecode.
+     * @param {Number} time - The time in milli seconds.
      */
     this.setClockTime = function(time) {
       clockTimeMilliSeconds = time;
@@ -109,7 +114,7 @@ H5P.Timer = (function ($) {
       }
       startDate = new Date();
       status = Timer.PLAYING;
-      update(Timer.PLAYING);
+      update();
     }
 
     /**
@@ -129,20 +134,21 @@ H5P.Timer = (function ($) {
       if (status !== Timer.STOPPED) {
         lastDate = new Date();
         status = Timer.STOPPED;
-      }          
+      }
     }
 
     /**
      * Update the timer until Timer.STOPPED.
      */
     var update = function () {
-      if ((status === Timer.STOPPED)) {
+      if (status === Timer.STOPPED) {
         clearTimeout(loop);
         return;
       }
 
       if (status === Timer.PLAYING) {
-        var currentMilliSeconds = (new Date().getTime() - startDate);          
+        // TODO: Check if this is better than using interval as delta
+        var currentMilliSeconds = (new Date().getTime() - startDate);
         clockTimeMilliSeconds   += currentMilliSeconds;
         playingTimeMilliSeconds += currentMilliSeconds;
       }
