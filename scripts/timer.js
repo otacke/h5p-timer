@@ -20,13 +20,8 @@ H5P.Timer = (function ($) {
    *
    * @param {Number} interval - The update interval.
    */
-  function Timer(interval) {
+  function Timer(interval = Timer.DEFAULT_INTERVAL) {
     var self = this;
-
-    if (!interval) {
-      // determines the timing precision (kind of)
-      var interval = Timer.DEFAULT_INTERVAL;
-    }
 
     // time on clock and the time the clock has run
     var clockTimeMilliSeconds, playingTimeMilliSeconds;
@@ -87,10 +82,12 @@ H5P.Timer = (function ($) {
     /**
      * Set the starting time.
      *
-     * @param {Number} time - The time in milli seconds.
+     * @param {Number} time - The time in milliseconds.
      */
     this.setClockTime = function(time) {
-      clockTimeMilliSeconds = time;
+      if (Number.isInteger(time)) {
+        clockTimeMilliSeconds = time;
+      }
     }
 
     /**
@@ -175,30 +172,13 @@ H5P.Timer = (function ($) {
   }
 
   /**
-   * Check if a value is an Integer.
-   *
-   * @param {Object} value - The object/value to be checked.
-   * @return {Boolean} True, if object/value is an Integer.
-   */
-  isInteger = function(value) {
-    if (isNaN(value)) {
-      return false;
-    }
-    value = parseFloat(value);
-      if ((value | 0) !== value) {
-      return false;
-    }
-    return true;
-  };
-
-  /**
    * Generate timecode elements from milliseconds.
    *
    * @param {Number} milliSeconds - The milliseconds.
    * @return {Object} The timecode elements.
    */
-  toTimecodeElements = function(milliSeconds) {
-    if (!isInteger(milliSeconds)) {
+  var toTimecodeElements = function(milliSeconds) {
+    if (!Number.isInteger(milliSeconds)) {
       return;
     }
     milliSeconds = Math.round(milliSeconds/100);
@@ -220,10 +200,13 @@ H5P.Timer = (function ($) {
    * @return {Number} The time element.
    */
   Timer.extractTimeElement = function(milliSeconds, element, rounded = false) {
-    if (!isInteger(milliSeconds)) {
+    if (!Number.isInteger(milliSeconds)) {
       return;
     }
     if ($.type(element) !== 'string') {
+      return;
+    }
+    if ($.type(rounded) !== 'boolean') {
       return;
     }
 
@@ -236,7 +219,7 @@ H5P.Timer = (function ($) {
           tenthSeconds:Math.round(milliSeconds/100)
       }
     } else {
-    timeElements = toTimecodeElements(milliSeconds);
+      timeElements = toTimecodeElements(milliSeconds);
     }
 
     return timeElements[element];
@@ -249,7 +232,7 @@ H5P.Timer = (function ($) {
    * @return {String} The humanized timecode.
    */
   Timer.toTimecode = function(milliSeconds) {
-    if (!isInteger(milliSeconds)) {
+    if (!Number.isInteger(milliSeconds)) {
       return;
     }
 
