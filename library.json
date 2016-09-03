@@ -9,7 +9,6 @@
   "author": "Oliver Tacke",
   "license": "WTFPL",
   "preloadedJs": [
-    {"path": "scripts/timer.js"},
-    {"path": "scripts/notifications.js"}
+    {"path": "scripts/timer.js"}
   ]
 }
