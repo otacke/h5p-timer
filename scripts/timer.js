@@ -5,7 +5,6 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: humanize() and dehumanize()
  * TODO: notifications class
  * TODO: something like "notifyAfter(milliSeconds, callback, params)"
  * TODO: something like "notifyIn(milliSeconds, callback, params)"
@@ -172,25 +171,60 @@ H5P.Timer = (function ($) {
         update();
       }, interval);
     }
-
-    /**
-     * Humanize time down to tenth of seconds.
-     *
-     * @param {Number} milliSeconds - The time in milliSeconds.
-     * @return {String} The humanized time.
-     */
-    var humanize = function(milliSeconds) {
-    }
-
-    /**
-     * Dehumanize time from down to tenth of seconds.
-     *
-     * @param {String} timecode - The humanized time.
-     * @return {Number} The time in milliSeconds.
-     */
-    var dehumanize = function(timecode) {
-    }
   }
+
+  /**
+   * Humanize time down to tenth of seconds.
+   *
+   * @param {Number} milliSeconds - The time in milliSeconds.
+   * @return {String} The humanized time.
+   */
+  Timer.toTimecode = function(milliSeconds) {
+    // check if milliSeconds contains an integer
+    if (isNaN(milliSeconds)) {
+       return false;
+    }
+    var milliSeconds = parseFloat(milliSeconds);
+      if ((milliSeconds | 0) !== milliSeconds) {
+      return false;
+    }
+    
+    // calculate timecode elements
+    milliSeconds = Math.round(milliSeconds/100);
+    var tenthSeconds = milliSeconds - Math.floor(milliSeconds / 10) * 10;
+    var seconds = Math.floor(milliSeconds / 10);
+    var minutes = Math.floor(seconds / 60);
+    var hours = Math.floor(minutes / 60);
+    minutes = Math.floor(minutes % 60);
+    seconds = Math.floor(seconds % 60);
+
+    // create timecode
+    var timecode = '';
+ 
+    if (hours > 0) {
+      timecode += hours + ":";
+    }
+    if (minutes < 10) {
+      timecode += "0";
+    }
+    timecode += minutes + ":";
+    if (seconds < 10) {
+      timecode += "0";
+    }
+    timecode += seconds + ".";
+    timecode += tenthSeconds;
+
+    return timecode;
+  };
+
+  /**
+   * Dehumanize time from down to tenth of seconds.
+   *
+   * @param {String} timecode - The humanized time.
+   * @return {Number} The time in milliSeconds.
+   */
+  Timer.dehumanize = function(timecode) {
+  };
 
   // Timer states
   /** @constant {Number} */
