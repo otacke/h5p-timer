@@ -9,6 +9,7 @@ var H5P = H5P || {};
  * TODO: something like "notifyAfter(milliSeconds, callback, params)"
  * TODO: something like "notifyIn(milliSeconds, callback, params)"
  * TODO: something like "notifyEvery(milliSeconds, callback, params)"
+ * TODO: something like "killNotification(id)"
  *
  * @param {H5P.jQuery} $
  */
@@ -174,14 +175,14 @@ H5P.Timer = (function ($) {
   }
 
   /**
-   * Check if a value is an Integer
+   * Check if a value is an Integer.
    *
    * @param {Object} value - The object/value to be checked.
    * @return {Boolean} True, if object/value is an Integer.
    */
   isInteger = function(value) {
     if (isNaN(value)) {
-       return false;
+      return false;
     }
     value = parseFloat(value);
       if ((value | 0) !== value) {
@@ -191,7 +192,7 @@ H5P.Timer = (function ($) {
   };
 
   /**
-   * Generate timecode elements from milliSeconds
+   * Generate timecode elements from milliSeconds.
    *
    * @param {Number} milliSeconds - The milliSeconds.
    * @return {Object} The timecode elements.
@@ -211,9 +212,8 @@ H5P.Timer = (function ($) {
     return {hours:hours, minutes:minutes, seconds:seconds, tenthSeconds:tenthSeconds};
   };
 
-
   /**
-   * Extract humanized time element from time
+   * Extract humanized time element from time.
    *
    * @param {Number} milliSeconds - The milliSeconds.
    * @param {String} element - Time element: hours, minutes, seconds or tenthSeconds.
@@ -228,10 +228,10 @@ H5P.Timer = (function ($) {
     }
     var timecodeElements = toTimecodeElements(milliSeconds);
     return timecodeElements[element];
-  }
+  };
 
   /**
-   * Convert time in milliseconds to timecode
+   * Convert time in milliseconds to timecode.
    *
    * @param {Number} milliSeconds - The time in milliSeconds.
    * @return {String} The humanized timecode.
