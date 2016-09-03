@@ -192,46 +192,6 @@ H5P.Timer = (function ($) {
   };
 
   /**
-   * Convert milliSeconds to tenth of seconds (rounded).
-   *
-   * @param {Number} milliSeconds - The milliseconds.
-   * @return {Number} Rounded to tenth of seconds.
-   */
-  toTenthSeconds = function(milliSeconds) {
-    return Math.round(milliSeconds/100);
-  }
-
-  /**
-   * Convert milliSeconds to seconds (rounded).
-   *
-   * @param {Number} milliSeconds - The milliseconds.
-   * @return {Number} Rounded to seconds.
-   */
-  toSeconds = function(milliSeconds) {
-    return Math.round(milliSeconds/1000);
-  }
-
-  /**
-   * Convert milliSeconds to minutes (rounded).
-   *
-   * @param {Number} milliSeconds - The milliseconds.
-   * @return {Number} Rounded to minutes.
-   */
-  toMinutes = function(milliSeconds) {
-    return Math.round(milliSeconds/60000);
-  }
-
-  /**
-   * Convert milliSeconds to hours (rounded).
-   *
-   * @param {Number} milliSeconds - The milliseconds.
-   * @return {Number} Rounded to hours.
-   */
-  toHours = function(milliSeconds) {
-    return Math.round(milliSeconds/3600000);
-  }
-
-  /**
    * Generate timecode elements from milliseconds.
    *
    * @param {Number} milliSeconds - The milliseconds.
@@ -270,10 +230,10 @@ H5P.Timer = (function ($) {
     var timeElements;
     if (rounded) {
       timeElements = {
-          hours:toHours(milliSeconds),
-          minutes:toMinutes(milliSeconds),
-          seconds:toSeconds(milliSeconds),
-          tenthSeconds:toTenthSeconds(milliSeconds)
+          hours:Math.round(milliSeconds/3600000),
+          minutes:Math.round(milliSeconds/60000),
+          seconds:Math.round(milliSeconds/1000),
+          tenthSeconds:Math.round(milliSeconds/100)
       }
     } else {
     timeElements = toTimecodeElements(milliSeconds);
