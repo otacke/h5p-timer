@@ -174,22 +174,29 @@ H5P.Timer = (function ($) {
   }
 
   /**
-   * Humanize time down to tenth of seconds.
+   * Check if a value is an Integer
    *
-   * @param {Number} milliSeconds - The time in milliSeconds.
-   * @return {String} The humanized time.
+   * @param {Object} value - The object/value to be checked.
+   * @return {Boolean} True, if object/value is an Integer.
    */
-  Timer.toTimecode = function(milliSeconds) {
-    // check if milliSeconds contains an integer
-    if (isNaN(milliSeconds)) {
+  isInteger = function(value) {
+    if (isNaN(value)) {
        return false;
     }
-    var milliSeconds = parseFloat(milliSeconds);
-      if ((milliSeconds | 0) !== milliSeconds) {
+    value = parseFloat(value);
+      if ((value | 0) !== value) {
       return false;
     }
-    
-    // calculate timecode elements
+    return true;
+  };
+
+  /**
+   * Generate timecode elements from milliSeconds
+   *
+   * @param {Number} milliSeconds - The milliSeconds.
+   * @return {Object} The timecode elements.
+   */
+  toTimecodeElements = function(milliSeconds) {
     milliSeconds = Math.round(milliSeconds/100);
     var tenthSeconds = milliSeconds - Math.floor(milliSeconds / 10) * 10;
     var seconds = Math.floor(milliSeconds / 10);
@@ -198,32 +205,39 @@ H5P.Timer = (function ($) {
     minutes = Math.floor(minutes % 60);
     seconds = Math.floor(seconds % 60);
 
-    // create timecode
-    var timecode = '';
- 
-    if (hours > 0) {
-      timecode += hours + ":";
-    }
-    if (minutes < 10) {
-      timecode += "0";
-    }
-    timecode += minutes + ":";
-    if (seconds < 10) {
-      timecode += "0";
-    }
-    timecode += seconds + ".";
-    timecode += tenthSeconds;
-
-    return timecode;
+    return {hours:hours, minutes:minutes, seconds:seconds, tenthSeconds:tenthSeconds};
   };
 
   /**
-   * Dehumanize time from down to tenth of seconds.
+   * Convert time in milliseconds to timecode
    *
-   * @param {String} timecode - The humanized time.
-   * @return {Number} The time in milliSeconds.
+   * @param {Number} milliSeconds - The time in milliSeconds.
+   * @return {String} The humanized timecode.
    */
-  Timer.dehumanize = function(timecode) {
+  Timer.toTimecode = function(milliSeconds) {
+    if (!isInteger(milliSeconds)) {
+      return false;
+    }
+
+    var timecodeElements = toTimecodeElements(milliSeconds);
+
+    // create timecode
+    var timecode = '';
+ 
+    if (timecodeElements['hours'] > 0) {
+      timecode += timecodeElements['hours'] + ":";
+    }
+    if (timecodeElements['minutes'] < 10) {
+      timecode += "0";
+    }
+    timecode += timecodeElements['minutes'] + ":";
+    if (timecodeElements['seconds'] < 10) {
+      timecode += "0";
+    }
+    timecode += timecodeElements['seconds'] + ".";
+    timecode += timecodeElements['tenthSeconds'];
+
+    return timecode;
   };
 
   // Timer states
