@@ -192,9 +192,49 @@ H5P.Timer = (function ($) {
   };
 
   /**
-   * Generate timecode elements from milliSeconds.
+   * Convert milliSeconds to tenth of seconds (rounded).
    *
-   * @param {Number} milliSeconds - The milliSeconds.
+   * @param {Number} milliSeconds - The milliseconds.
+   * @return {Number} Rounded to tenth of seconds.
+   */
+  toTenthSeconds = function(milliSeconds) {
+    return Math.round(milliSeconds/100);
+  }
+
+  /**
+   * Convert milliSeconds to seconds (rounded).
+   *
+   * @param {Number} milliSeconds - The milliseconds.
+   * @return {Number} Rounded to seconds.
+   */
+  toSeconds = function(milliSeconds) {
+    return Math.round(milliSeconds/1000);
+  }
+
+  /**
+   * Convert milliSeconds to minutes (rounded).
+   *
+   * @param {Number} milliSeconds - The milliseconds.
+   * @return {Number} Rounded to minutes.
+   */
+  toMinutes = function(milliSeconds) {
+    return Math.round(milliSeconds/60000);
+  }
+
+  /**
+   * Convert milliSeconds to hours (rounded).
+   *
+   * @param {Number} milliSeconds - The milliseconds.
+   * @return {Number} Rounded to hours.
+   */
+  toHours = function(milliSeconds) {
+    return Math.round(milliSeconds/3600000);
+  }
+
+  /**
+   * Generate timecode elements from milliseconds.
+   *
+   * @param {Number} milliSeconds - The milliseconds.
    * @return {Object} The timecode elements.
    */
   toTimecodeElements = function(milliSeconds) {
@@ -219,15 +259,27 @@ H5P.Timer = (function ($) {
    * @param {String} element - Time element: hours, minutes, seconds or tenthSeconds.
    * @return {Number} The time element.
    */
-  Timer.extractTimeElement = function(milliSeconds, element) {
+  Timer.extractTimeElement = function(milliSeconds, element, rounded = false) {
     if (!isInteger(milliSeconds)) {
       return;
     }
     if ($.type(element) !== 'string') {
       return;
     }
-    var timecodeElements = toTimecodeElements(milliSeconds);
-    return timecodeElements[element];
+
+    var timeElements;
+    if (rounded) {
+      timeElements = {
+          hours:toHours(milliSeconds),
+          minutes:toMinutes(milliSeconds),
+          seconds:toSeconds(milliSeconds),
+          tenthSeconds:toTenthSeconds(milliSeconds)
+      }
+    } else {
+    timeElements = toTimecodeElements(milliSeconds);
+    }
+
+    return timeElements[element];
   };
 
   /**
