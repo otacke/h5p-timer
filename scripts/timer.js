@@ -38,6 +38,12 @@ H5P.Timer = (function ($) {
     // indicate counting direction
     var mode;
 
+    // notifications
+    var notifications = [];
+
+    // counter for notifications;
+    var notificationsIdCounter = 0;
+
     /**
      * Get the timer status.
      *
@@ -165,9 +171,60 @@ H5P.Timer = (function ($) {
       }
       startDate = new Date();
 
+      checkNotifications();
+
       loop = setTimeout(function () {
         update();
       }, interval);
+    }
+    
+    /**
+     * Add a notification.
+     *
+     * @param {Number} type - Clock Time, Playing Time or Running Time.
+     * @param {Number} calltime - Time when notification is triggered.
+     * @param {Number} repeat - Time interval after which to repeat the notification.
+     * @param {Function} callback - Callback function.
+     * @param {Object} params - parameters for the callback function.
+     * @return {Number} The ID of the notification.
+     */
+    this.notify = function(type, calltime, repeat, callback, params) {
+      var id = notificationsIdCounter;
+      notificationsIdCounter++;
+
+      //TODO: validity check of variables
+
+      var notification = {type, calltime, repeat, callback, params};
+      notifications[id] = notification;
+
+      return id;
+    }
+
+    /**
+     * Remove a notification.
+     *
+     * @param {Number} id - The id of the notification.
+     */    
+    this.clearNotification = function(id) {
+      /*
+       * Just undefining the notification may result in many null values in the
+       * array and consume a lot of time for checking all notifications - but
+       * that should not be the case to often. This way is fast.
+       * Alternatively, we could just use a list and completely delete unused
+       * notifications, but we'd have to store all IDs and deleting might take
+       * a lot of time, leading the timer to jitter.
+       */
+      if ((id < 0) || (id >= notifications.length)) {
+        return;
+      }
+      notifications[id] = undefined;
+    }
+
+    /**
+     * Check notifications for necessary callbacks
+     */     
+    var checkNotifications = function() {
+      // TODO: walk all notifications, execute if time matches, delete or repeat
     }
   }
 
@@ -218,7 +275,8 @@ H5P.Timer = (function ($) {
           seconds:Math.round(milliSeconds/1000),
           tenthSeconds:Math.round(milliSeconds/100)
       }
-    } else {
+    }
+    else {
       timeElements = toTimecodeElements(milliSeconds);
     }
 
@@ -265,7 +323,7 @@ H5P.Timer = (function ($) {
   /** @constant {Number} */
   Timer.PAUSED = 2;
 
-  // Timer direction
+  // Timer directions
   /** @constant {Number} */
   Timer.FORWARD = 1;
   /** @constant {Number} */
@@ -273,6 +331,14 @@ H5P.Timer = (function ($) {
 
   /** @constant {Number} */
   Timer.DEFAULT_INTERVAL = 10;
+
+  // Notification types
+  /** @constant {Number} */
+  Timer.TYPE_CLOCK = 0;
+  /** @constant {Number} */
+  Timer.TYPE_PLAYING = 1;
+  /** @constant {Number} */
+  Timer.TYPE_RUNNING = 2;
 
   return Timer;
 })(H5P.jQuery);
