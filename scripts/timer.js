@@ -197,6 +197,9 @@ H5P.Timer = (function ($) {
    * @return {Object} The timecode elements.
    */
   toTimecodeElements = function(milliSeconds) {
+    if (!isInteger(milliSeconds)) {
+      return;
+    }
     milliSeconds = Math.round(milliSeconds/100);
     var tenthSeconds = milliSeconds - Math.floor(milliSeconds / 10) * 10;
     var seconds = Math.floor(milliSeconds / 10);
@@ -208,6 +211,25 @@ H5P.Timer = (function ($) {
     return {hours:hours, minutes:minutes, seconds:seconds, tenthSeconds:tenthSeconds};
   };
 
+
+  /**
+   * Extract humanized time element from time
+   *
+   * @param {Number} milliSeconds - The milliSeconds.
+   * @param {String} element - Time element: hours, minutes, seconds or tenthSeconds.
+   * @return {Number} The time element.
+   */
+  Timer.extractTimeElement = function(milliSeconds, element) {
+    if (!isInteger(milliSeconds)) {
+      return;
+    }
+    if ($.type(element) !== 'string') {
+      return;
+    }
+    var timecodeElements = toTimecodeElements(milliSeconds);
+    return timecodeElements[element];
+  }
+
   /**
    * Convert time in milliseconds to timecode
    *
@@ -216,7 +238,7 @@ H5P.Timer = (function ($) {
    */
   Timer.toTimecode = function(milliSeconds) {
     if (!isInteger(milliSeconds)) {
-      return false;
+      return;
     }
 
     var timecodeElements = toTimecodeElements(milliSeconds);
