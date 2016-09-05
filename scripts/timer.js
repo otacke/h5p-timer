@@ -192,8 +192,21 @@ H5P.Timer = (function ($) {
       var id = notificationsIdCounter;
       notificationsIdCounter++;
 
-      //TODO: validity check of variables
+      //type checks
+      if (!Number.isInteger(type)) {
+        return;
+      }
+      if (!Number.isInteger(calltime)) {
+        return;
+      }
+      if (!Number.isInteger(repeat)) {
+        return;
+      }
+      if (!callback instanceof Function) {
+        return;
+      }
 
+      //TODO: rewrite to use a JSON like object structure
       var notification = {type, calltime, repeat, callback, params};
       notifications[id] = notification;
 
@@ -207,12 +220,9 @@ H5P.Timer = (function ($) {
      */    
     this.clearNotification = function(id) {
       /*
-       * Just undefining the notification may result in many null values in the
-       * array and consume a lot of time for checking all notifications - but
-       * that should not be the case to often. This way is fast.
-       * Alternatively, we could just use a list and completely delete unused
-       * notifications, but we'd have to store all IDs and deleting might take
-       * a lot of time, leading the timer to jitter.
+       * TODO: Rewrite this part. If there's notification used in "repeat mode",
+       * then there will be too many null entries and searching the array
+       * will take "forever".
        */
       if ((id < 0) || (id >= notifications.length)) {
         return;
