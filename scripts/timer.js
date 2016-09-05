@@ -206,9 +206,10 @@ H5P.Timer = (function ($) {
         return;
       }
 
-      //TODO: rewrite to use a JSON like object structure
-      var notification = {type, calltime, repeat, callback, params};
-      notifications[id] = notification;
+      // TODO: Do some research about what might be the best way to store the notifications
+      var data = {'type':type, 'calltime':calltime, 'repeat':repeat, 'callback':callback, 'params':params};
+      var notification = {'id':id, 'data':data};
+      notifications.push(notification); // is an array the best choice?
 
       return id;
     }
@@ -219,15 +220,7 @@ H5P.Timer = (function ($) {
      * @param {Number} id - The id of the notification.
      */    
     this.clearNotification = function(id) {
-      /*
-       * TODO: Rewrite this part. If there's notification used in "repeat mode",
-       * then there will be too many null entries and searching the array
-       * will take "forever".
-       */
-      if ((id < 0) || (id >= notifications.length)) {
-        return;
-      }
-      notifications[id] = undefined;
+      // TODO: find the notification in notifications and delete it
     }
 
     /**
