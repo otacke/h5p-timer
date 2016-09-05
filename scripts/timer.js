@@ -171,8 +171,6 @@ H5P.Timer = (function ($) {
       }
       startDate = new Date();
 
-      checkNotifications();
-
       loop = setTimeout(function () {
         update();
       }, interval);
