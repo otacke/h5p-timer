@@ -5,11 +5,10 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: notifications class
  * TODO: something like "notifyAfter(milliSeconds, callback, params)"
  * TODO: something like "notifyIn(milliSeconds, callback, params)"
  * TODO: something like "notifyEvery(milliSeconds, callback, params)"
- * TODO: something like "killNotification(id)"
+ * TODO: something like a ChangeListener?
  *
  * @param {H5P.jQuery} $
  */
@@ -170,6 +169,8 @@ H5P.Timer = (function ($) {
         playingTimeMilliSeconds += currentMilliSeconds;
       }
       startDate = new Date();
+      
+      // TODO: checkNotifications();
 
       loop = setTimeout(function () {
         update();
@@ -187,27 +188,29 @@ H5P.Timer = (function ($) {
      * @return {Number} The ID of the notification.
      */
     this.notify = function(type, calltime, repeat, callback, params) {
-      var id = notificationsIdCounter;
-      notificationsIdCounter++;
-
       //type checks
       if (!Number.isInteger(type)) {
         return;
       }
       if (!Number.isInteger(calltime)) {
+        // TODO: calltime must be > current time (forward) / < current time (backward)
         return;
       }
-      if (!Number.isInteger(repeat)) {
+      if (repeat && !Number.isInteger(repeat)) {
+        // TODO: repeat must be >= interval (ideally multiple of interval)
         return;
       }
       if (!callback instanceof Function) {
         return;
       }
 
-      // TODO: Do some research about what might be the best way to store the notifications
-      var data = {'type':type, 'calltime':calltime, 'repeat':repeat, 'callback':callback, 'params':params};
-      var notification = {'id':id, 'data':data};
-      notifications.push(notification); // is an array the best choice?
+      // use latest ID
+      var id = notificationsIdCounter;
+      notificationsIdCounter++;
+
+      // add notification to existing ones
+      var notification = {'id':id, 'type':type, 'calltime':calltime, 'repeat':repeat, 'callback':callback, 'params':params};
+      notifications.push(notification);
 
       return id;
     }
@@ -218,14 +221,14 @@ H5P.Timer = (function ($) {
      * @param {Number} id - The id of the notification.
      */    
     this.clearNotification = function(id) {
-      // TODO: find the notification in notifications and delete it
+      notifications = $.grep(notifications, function(item) { return item.id === id }, true);
     }
 
     /**
      * Check notifications for necessary callbacks
      */     
     var checkNotifications = function() {
-      // TODO: walk all notifications, execute if time matches, delete or repeat
+      // TODO: grep the right notifications, for each one: execute + clear or repeat
     }
   }
 
