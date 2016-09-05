@@ -98,12 +98,14 @@ H5P.Timer = (function ($) {
     /**
      * Initialize the timer.
      */
-    var reset = function() {
-      if ((mode === Timer.FORWARD) || (!clockTimeMilliSeconds)) {
-        clockTimeMilliSeconds = 0;
+    this.reset = function() {
+      if (status === Timer.STOPPED) {
+        if ((mode === Timer.FORWARD) || (!clockTimeMilliSeconds)) {
+          clockTimeMilliSeconds = 0;
+        }
+        playingTimeMilliSeconds = 0;
+        firstDate = undefined;
       }
-      playingTimeMilliSeconds = 0;
-      firstDate = undefined;
     }
 
     /**
@@ -117,7 +119,7 @@ H5P.Timer = (function ($) {
       }
       mode = direction;
       if (status === Timer.STOPPED) {
-        reset();
+        this.reset();
       }
       if (!firstDate) {
         firstDate = new Date();
