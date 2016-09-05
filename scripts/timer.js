@@ -12,7 +12,7 @@ var H5P = H5P || {};
  *
  * @param {H5P.jQuery} $
  */
-H5P.Timer = (function ($) {
+H5P.Timer = (function($) {
   /**
    * Create a timer.
    * @constructor
@@ -31,7 +31,7 @@ H5P.Timer = (function ($) {
     // update loop
     var loop;
 
-    // timer status    
+    // timer status
     var status = Timer.STOPPED;
 
     // indicate counting direction
@@ -78,8 +78,7 @@ H5P.Timer = (function ($) {
     this.getRunningTime = function() {
       if (status !== Timer.STOPPED) {
         return (new Date().getTime() - firstDate);
-      }
-      else {
+      } else {
         return lastDate.getTime() - firstDate;
       }
     }
@@ -152,7 +151,7 @@ H5P.Timer = (function ($) {
     /**
      * Update the timer until Timer.STOPPED.
      */
-    var update = function () {
+    var update = function() {
       // stop because requested
       if (status === Timer.STOPPED) {
         clearTimeout(loop);
@@ -167,18 +166,18 @@ H5P.Timer = (function ($) {
 
       if (status === Timer.PLAYING) {
         var currentMilliSeconds = (new Date().getTime() - startDate);
-        clockTimeMilliSeconds   += currentMilliSeconds * mode;
+        clockTimeMilliSeconds += currentMilliSeconds * mode;
         playingTimeMilliSeconds += currentMilliSeconds;
       }
       startDate = new Date();
-      
+
       // TODO: checkNotifications();
 
-      loop = setTimeout(function () {
+      loop = setTimeout(function() {
         update();
       }, interval);
     }
-    
+
     /**
      * Add a notification.
      *
@@ -211,7 +210,14 @@ H5P.Timer = (function ($) {
       notificationsIdCounter++;
 
       // add notification to existing ones
-      var notification = {'id':id, 'type':type, 'calltime':calltime, 'repeat':repeat, 'callback':callback, 'params':params};
+      var notification = {
+        'id': id,
+        'type': type,
+        'calltime': calltime,
+        'repeat': repeat,
+        'callback': callback,
+        'params': params
+      };
       notifications.push(notification);
 
       return id;
@@ -221,14 +227,16 @@ H5P.Timer = (function ($) {
      * Remove a notification.
      *
      * @param {Number} id - The id of the notification.
-     */    
+     */
     this.clearNotification = function(id) {
-      notifications = $.grep(notifications, function(item) { return item.id === id }, true);
+      notifications = $.grep(notifications, function(item) {
+        return item.id === id
+      }, true);
     }
 
     /**
      * Check notifications for necessary callbacks
-     */     
+     */
     var checkNotifications = function() {
       // TODO: grep the right notifications, for each one: execute + clear or repeat
     }
@@ -244,7 +252,7 @@ H5P.Timer = (function ($) {
     if (!Number.isInteger(milliSeconds)) {
       return;
     }
-    milliSeconds = Math.round(milliSeconds/100);
+    milliSeconds = Math.round(milliSeconds / 100);
     var tenthSeconds = milliSeconds - Math.floor(milliSeconds / 10) * 10;
     var seconds = Math.floor(milliSeconds / 10);
     var minutes = Math.floor(seconds / 60);
@@ -252,7 +260,12 @@ H5P.Timer = (function ($) {
     minutes = Math.floor(minutes % 60);
     seconds = Math.floor(seconds % 60);
 
-    return {hours:hours, minutes:minutes, seconds:seconds, tenthSeconds:tenthSeconds};
+    return {
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds,
+      tenthSeconds: tenthSeconds
+    };
   };
 
   /**
@@ -262,7 +275,8 @@ H5P.Timer = (function ($) {
    * @param {String} element - Time element: hours, minutes, seconds or tenthSeconds.
    * @return {Number} The time element.
    */
-  Timer.extractTimeElement = function(milliSeconds, element, rounded = false) {
+  Timer.extractTimeElement = function(milliSeconds, element, rounded =
+    false) {
     if (!Number.isInteger(milliSeconds)) {
       return;
     }
@@ -276,13 +290,12 @@ H5P.Timer = (function ($) {
     var timeElements;
     if (rounded) {
       timeElements = {
-          hours:Math.round(milliSeconds/3600000),
-          minutes:Math.round(milliSeconds/60000),
-          seconds:Math.round(milliSeconds/1000),
-          tenthSeconds:Math.round(milliSeconds/100)
+        hours: Math.round(milliSeconds / 3600000),
+        minutes: Math.round(milliSeconds / 60000),
+        seconds: Math.round(milliSeconds / 1000),
+        tenthSeconds: Math.round(milliSeconds / 100)
       }
-    }
-    else {
+    } else {
       timeElements = toTimecodeElements(milliSeconds);
     }
 
@@ -304,7 +317,7 @@ H5P.Timer = (function ($) {
 
     // create timecode
     var timecode = '';
- 
+
     if (timecodeElements['hours'] > 0) {
       timecode += timecodeElements['hours'] + ":";
     }
