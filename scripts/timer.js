@@ -16,8 +16,7 @@ H5P.Timer = (function($) {
   /**
    * Create a timer.
    * @constructor
-   *
-   * @param {Number} interval - The update interval.
+   * @param {number} [interval=Timer.DEFAULT_INTERVAL] - The update interval.
    */
   function Timer(interval = Timer.DEFAULT_INTERVAL) {
     var self = this;
@@ -45,37 +44,33 @@ H5P.Timer = (function($) {
 
     /**
      * Get the timer status.
-     *
-     * @return {Number} The timer status.
+     * @return {number} The timer status.
      */
-    this.getStatus = function() {
+    self.getStatus = function() {
       return status;
     }
 
     /**
      * Get the time that's on the clock.
-     *
-     * @return {Number} The time on the clock.
+     * @return {number} The time on the clock.
      */
-    this.getClockTime = function() {
+    self.getClockTime = function() {
       return clockTimeMilliSeconds;
     }
 
     /**
      * Get the time the timer was playing so far.
-     *
-     * @return {Number} The time played.
+     * @return {number} The time played.
      */
-    this.getPlayingTime = function() {
+    self.getPlayingTime = function() {
       return playingTimeMilliSeconds;
     }
 
     /**
      * Get the total running time from play() until stop().
-     *
-     * @return {Number} The total running time.
+     * @return {number} The total running time.
      */
-    this.getRunningTime = function() {
+    self.getRunningTime = function() {
       if (status !== Timer.STOPPED) {
         return (new Date().getTime() - firstDate);
       } else {
@@ -85,10 +80,9 @@ H5P.Timer = (function($) {
 
     /**
      * Set the starting time.
-     *
-     * @param {Number} time - The time in milliseconds.
+     * @param {number} time - The time in milliseconds.
      */
-    this.setClockTime = function(time) {
+    self.setClockTime = function(time) {
       if (Number.isInteger(time)) {
         clockTimeMilliSeconds = time;
       }
@@ -97,7 +91,7 @@ H5P.Timer = (function($) {
     /**
      * Initialize the timer.
      */
-    this.reset = function() {
+    self.reset = function() {
       if (status === Timer.STOPPED) {
         if ((mode === Timer.FORWARD) || (!clockTimeMilliSeconds)) {
           clockTimeMilliSeconds = 0;
@@ -109,16 +103,15 @@ H5P.Timer = (function($) {
 
     /**
      * Start the timer.
-     *
-     * @param {Number} direction - Indicate counting up or down.
+     * @param {number} [direction=Timer.FORWARD] - Indicate counting up or down.
      */
-    this.play = function(direction = Timer.FORWARD) {
+    self.play = function(direction = Timer.FORWARD) {
       if (status === Timer.PLAYING) {
         return;
       }
       mode = direction;
       if (status === Timer.STOPPED) {
-        this.reset();
+        self.reset();
       }
       if (!firstDate) {
         firstDate = new Date();
@@ -131,7 +124,7 @@ H5P.Timer = (function($) {
     /**
      * Pause the timer.
      */
-    this.pause = function() {
+    self.pause = function() {
       if (status !== Timer.PLAYING) {
         return;
       }
@@ -141,7 +134,7 @@ H5P.Timer = (function($) {
     /**
      * Stop the timer.
      */
-    this.stop = function() {
+    self.stop = function() {
       if (status !== Timer.STOPPED) {
         lastDate = new Date();
         status = Timer.STOPPED;
@@ -180,15 +173,14 @@ H5P.Timer = (function($) {
 
     /**
      * Add a notification.
-     *
-     * @param {Number} type - Clock Time, Playing Time or Running Time.
-     * @param {Number} calltime - Time when notification is triggered.
-     * @param {Number} repeat - Time interval after which to repeat the notification.
-     * @param {Function} callback - Callback function.
+     * @param {number} type - Clock Time, Playing Time or Running Time.
+     * @param {number} calltime - Time when notification is triggered.
+     * @param {number} [repeat] - Time interval after which to repeat the notification.
+     * @callback callback - Callback function.
      * @param {Object} params - parameters for the callback function.
-     * @return {Number} The ID of the notification.
+     * @return {number} The ID of the notification.
      */
-    this.notify = function(type, calltime, repeat, callback, params) {
+    self.notify = function(type, calltime, repeat, callback, params) {
       //type checks
       if (!Number.isInteger(type)) {
         return;
@@ -225,12 +217,11 @@ H5P.Timer = (function($) {
 
     /**
      * Remove a notification.
-     *
-     * @param {Number} id - The id of the notification.
+     * @param {number} id - The id of the notification.
      */
-    this.clearNotification = function(id) {
+    self.clearNotification = function(id) {
       notifications = $.grep(notifications, function(item) {
-        return item.id === id
+        return item.id === id;
       }, true);
     }
 
@@ -244,8 +235,7 @@ H5P.Timer = (function($) {
 
   /**
    * Generate timecode elements from milliseconds.
-   *
-   * @param {Number} milliSeconds - The milliseconds.
+   * @param {number} milliSeconds - The milliseconds.
    * @return {Object} The timecode elements.
    */
   var toTimecodeElements = function(milliSeconds) {
@@ -270,10 +260,10 @@ H5P.Timer = (function($) {
 
   /**
    * Extract humanized time element from time.
-   *
-   * @param {Number} milliSeconds - The milliSeconds.
-   * @param {String} element - Time element: hours, minutes, seconds or tenthSeconds.
-   * @return {Number} The time element.
+   * @param {number} milliSeconds - The milliSeconds.
+   * @param {string} element - Time element: hours, minutes, seconds or tenthSeconds.
+   * @param {boolean} [rounded=false] - If true, element value will be rounded.
+   * @return {number} The time element.
    */
   Timer.extractTimeElement = function(milliSeconds, element, rounded =
     false) {
@@ -304,9 +294,8 @@ H5P.Timer = (function($) {
 
   /**
    * Convert time in milliseconds to timecode.
-   *
-   * @param {Number} milliSeconds - The time in milliSeconds.
-   * @return {String} The humanized timecode.
+   * @param {number} milliSeconds - The time in milliSeconds.
+   * @return {string} The humanized timecode.
    */
   Timer.toTimecode = function(milliSeconds) {
     if (!Number.isInteger(milliSeconds)) {
@@ -335,28 +324,28 @@ H5P.Timer = (function($) {
   };
 
   // Timer states
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.STOPPED = 0;
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.PLAYING = 1;
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.PAUSED = 2;
 
   // Timer directions
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.FORWARD = 1;
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.BACKWARD = -1;
 
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.DEFAULT_INTERVAL = 10;
 
   // Notification types
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.TYPE_CLOCK = 0;
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.TYPE_PLAYING = 1;
-  /** @constant {Number} */
+  /** @constant {number} */
   Timer.TYPE_RUNNING = 2;
 
   return Timer;
