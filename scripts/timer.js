@@ -74,7 +74,12 @@ H5P.Timer = (function($) {
       if (status !== Timer.STOPPED) {
         return (new Date().getTime() - firstDate);
       } else {
-        return lastDate.getTime() - firstDate;
+        if (!lastDate) {
+          return 0;
+        }
+        else {
+          return lastDate.getTime() - firstDate;
+        }
       }
     }
 
@@ -109,7 +114,11 @@ H5P.Timer = (function($) {
       if (status === Timer.PLAYING) {
         return;
       }
-      mode = direction;
+      if (!Number.isInteger(direction)) {
+        mode = Timer.FORWARD;
+      } else {
+        mode = direction;
+      }
       if (status === Timer.STOPPED) {
         self.reset();
       }
@@ -186,13 +195,42 @@ H5P.Timer = (function($) {
         return;
       }
       if (!Number.isInteger(calltime)) {
-        // TODO: calltime must be > current time (forward) / < current time (backward)
         return;
       }
-      if (repeat && !Number.isInteger(repeat)) {
-        // TODO: repeat must be >= interval (ideally multiple of interval)
+
+      // calltime must be > current time (forward) / < current time (backward)
+      switch (type) {
+        case (Timer.TYPE_CLOCK):
+          if ((calltime >= self.getClockTime()) && (mode === Timer.BACKWARD)) {
+            return;
+          }
+          if ((calltime <= self.getClockTime()) && (mode === Timer.FORWARD)) {
+            return;
+          }
+          break;
+        case (Timer.TYPE_PLAYING):
+          if (calltime <= self.getPlayingTime()) {
+            return;
+          }
+          break;
+        case (Timer.TYPE_RUNNING):
+          if (calltime <= self.getRunningTime()) {
+            return;
+          }
+          break;
+        default:
+          return;
+      }
+
+      // repeat must be >= interval (ideally multiple of interval)
+      if (!Number.isInteger(repeat)) {
         return;
       }
+      else {
+        repeat = Math.max(repeat, interval);
+      }
+
+      // callback must be a function
       if (!callback instanceof Function) {
         return;
       }
