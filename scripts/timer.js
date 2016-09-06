@@ -223,7 +223,7 @@ H5P.Timer = (function($) {
       }
 
       // repeat must be >= interval (ideally multiple of interval)
-      if (!Number.isInteger(repeat)) {
+      if ((!Number.isInteger(repeat)) && (repeat !== undefined)) {
         return;
       }
       else {
@@ -265,9 +265,34 @@ H5P.Timer = (function($) {
 
     /**
      * Check notifications for necessary callbacks
+     * @todo make private
      */
-    var checkNotifications = function() {
-      // TODO: grep the right notifications, for each one: execute + clear or repeat
+    self.checkNotifications = function() {
+      for (var type = Timer.TYPE_CLOCK; type <= Timer.TYPE_RUNNING; type++) {
+        var alerts = $.grep(notifications, function(item) {
+          return item.type === type;
+        });
+        // TODO: check for timing
+        alerts.forEach(function(element) {
+          element.callback.apply(this, element.params);
+          self.clearNotification(element.id);
+          if (element.repeat) {
+            var newTime;
+            switch (element.type) {
+              case (Timer.TYPE_CLOCK):
+                newTime = self.getClockTime() + element.repeat * mode;
+                break;
+              case (Timer.TYPE_PLAYING):
+                newTime = self.getPlayingTime() + element.repeat;
+                break;
+              case (Timer.TYPE_RUNNING):
+                newTime = self.getRunningTime() + element.repeat;
+                break;
+            }
+            // TODO: make new notification (requires update of notify()
+          }
+        });
+      }
     }
   }
 
