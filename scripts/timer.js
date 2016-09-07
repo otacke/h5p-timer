@@ -223,11 +223,13 @@ H5P.Timer = (function($) {
       }
 
       // repeat must be >= interval (ideally multiple of interval)
-      if ((!Number.isInteger(repeat)) && (repeat !== undefined)) {
-        return;
-      }
-      else {
-        repeat = Math.max(repeat, interval);
+      if (repeat !== undefined) {
+        if (!Number.isInteger(repeat)) {
+          return;
+        }
+        else {
+          repeat = Math.max(repeat, interval);
+        }
       }
 
       // callback must be a function
