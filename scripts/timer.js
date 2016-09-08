@@ -173,7 +173,7 @@ H5P.Timer = (function($) {
       }
       startDate = new Date();
 
-      // TODO: checkNotifications();
+      checkNotifications();
 
       loop = setTimeout(function() {
         update();
@@ -225,10 +225,23 @@ H5P.Timer = (function($) {
           time *= mode;
         }
       }
+
+      switch (type) {
+        case Timer.TYPE_CLOCK:
+          time += self.getClockTime();
+          break;
+        case Timer.TYPE_PLAYING:
+          time += self.getPlayingTime();
+          break;
+        case Timer.TYPE_RUNNING:
+          time += self.getRunningTime();
+          break;
+      }
+
       return notify(
         getNextNotificationId(),
         type,
-        new Date().getTime() + time,
+        time,
         undefined,
         callback,
         params
@@ -305,7 +318,6 @@ H5P.Timer = (function($) {
           repeat = Math.max(repeat, interval);
         }
       }
-
       // callback must be a function
       if (!callback instanceof Function) {
         return;
@@ -337,35 +349,68 @@ H5P.Timer = (function($) {
 
     /**
      * Check notifications for necessary callbacks
-     * @todo make private
      */
-    self.checkNotifications = function() {
-      console.log(JSON.stringify(notifications));
+    var checkNotifications = function() {
       for (var type = Timer.TYPE_CLOCK; type <= Timer.TYPE_RUNNING; type++) {
         var alerts = $.grep(notifications, function(item) {
           return item.type === type;
         });
-        // check for timing
         alerts.forEach(function(element) {
-          element.callback.apply(this, element.params);
-          self.clearNotification(element.id);
-          if (element.repeat) {
-            var newTime;
-            switch (element.type) {
-              case (Timer.TYPE_CLOCK):
-                newTime = self.getClockTime() + element.repeat * mode;
-                break;
-              case (Timer.TYPE_PLAYING):
-                newTime = self.getPlayingTime() + element.repeat;
-                break;
-              case (Timer.TYPE_RUNNING):
-                newTime = self.getRunningTime() + element.repeat;
-                break;
+          // TODO: CLEAN UP THIS MESS!!!
+          var triggerNotification = false;
+          switch (element.type) {
+            case Timer.TYPE_CLOCK:
+              if (mode === Timer.FORWARD) {
+                if (element.calltime <= self.getClockTime()) {
+                  triggerNotification = true;
+                }
+              }
+              else {
+                if (element.calltime >= self.getClockTime()) {
+                  triggerNotification = true;
+                }
+              }
+              break;
+            case Timer.TYPE_PLAYING:
+              if (element.calltime <= self.getPlayingTime()) {
+                triggerNotification = true;
+              }
+              break;
+            case Timer.TYPE_RUNNING:
+              if (element.calltime <= self.getRunningTime()) {
+                triggerNotification = true;
+              }
+              break;
+          }
+          if (triggerNotification === true) {
+            element.callback.apply(this, element.params);
+            self.clearNotification(element.id);
+            if (element.repeat) {
+              var newTime;
+              switch (element.type) {
+                case (Timer.TYPE_CLOCK):
+                  newTime = self.getClockTime() + element.repeat * mode;
+                  break;
+                case (Timer.TYPE_PLAYING):
+                  newTime = self.getPlayingTime() + element.repeat;
+                  break;
+                case (Timer.TYPE_RUNNING):
+                  newTime = self.getRunningTime() + element.repeat;
+                  break;
+              }
+              // rebuild notification if it should be repeated
+              notify(
+                element.id,
+                element.type,
+                newTime,
+                element.repeat,
+                element.callback,
+                element.params
+              );
             }
           }
         });
       }
-      console.log(JSON.stringify(notifications));
     }
   }
 
