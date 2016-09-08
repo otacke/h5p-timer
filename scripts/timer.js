@@ -216,6 +216,15 @@ H5P.Timer = (function($) {
      * @returns {Number} ID of the notification passed by notify().
      */
     self.notifyIn = function (type, time, callback, params) {
+      if ((time !== undefined) || (!Number.isInteger(time))) {
+        return;
+      }
+      else {
+        time = Math.max(time, interval);
+        if (type === Timer.TYPE_CLOCK) {
+          time *= mode;
+        }
+      }
       return notify(
         getNextNotificationId(),
         type,
@@ -353,7 +362,6 @@ H5P.Timer = (function($) {
                 newTime = self.getRunningTime() + element.repeat;
                 break;
             }
-            // TODO: make new notification
           }
         });
       }
