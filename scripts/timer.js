@@ -216,7 +216,7 @@ H5P.Timer = (function($) {
      * @returns {Number} ID of the notification passed by notify().
      */
     self.notifyIn = function (type, time, callback, params) {
-      if ((time !== undefined) || (!Number.isInteger(time))) {
+      if (!Number.isInteger(time)) {
         return;
       }
       else {
