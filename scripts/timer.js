@@ -189,6 +189,63 @@ H5P.Timer = (function($) {
     }
 
     /**
+     * Set a notification at a particular point in time.
+     * @param {Number} type - Clock time, Playing time or Running time.
+     * @param {number} calltime - Time when notification is triggered.
+     * @callback callback - Callback function.
+     * @param {Object} params - parameters for the callback function.
+     * @returns {Number} ID of the notification passed by notify().
+     */
+    self.notifyAt = function (type, calltime, callback, params) {
+      return notify(
+        getNextNotificationId(),
+        type,
+        calltime,
+        undefined,
+        callback,
+        params
+      );
+    }
+
+    /**
+     * Set a notification in a particular time distance.
+     * @param {Number} type - Clock time, Playing time or Running time.
+     * @param {number} time - Time distance for triggering.
+     * @callback callback - Callback function.
+     * @param {Object} params - parameters for the callback function.
+     * @returns {Number} ID of the notification passed by notify().
+     */
+    self.notifyIn = function (type, time, callback, params) {
+      return notify(
+        getNextNotificationId(),
+        type,
+        new Date().getTime() + time,
+        undefined,
+        callback,
+        params
+      );
+    }
+
+    /**
+     * Set a notification repeatedly (starting from a particular point in time).
+     * @param {Number} type - Clock time, Playing time or Running time.
+     * @param {number} [startTime] - Time for first triggering.
+     * @param {number} repeat - Time interval after which to repeat the notification.
+     * @callback callback - Callback function.
+     * @param {Object} params - parameters for the callback function.
+     * @returns {Number} ID passed by notify().
+     */
+    self.notifyEvery = function (type, startTime = new Date().getTime(), repeat, callback, params) {
+      return notify(
+        getNextNotificationId(),
+        type,
+        startTime,
+        repeat,
+        callback,
+        params);
+    }
+
+    /**
      * Add a notification.
      * @param {number} type - Clock Time, Playing Time or Running Time.
      * @param {number} calltime - Time when notification is triggered.
@@ -197,7 +254,7 @@ H5P.Timer = (function($) {
      * @param {Object} params - parameters for the callback function.
      * @return {number} The ID of the notification.
      */
-    self.notify = function(type, calltime, repeat, callback, params) {
+    var notify = function(id, type, calltime, repeat, callback, params) {
       //type checks
       if (!Number.isInteger(type)) {
         return;
@@ -245,9 +302,6 @@ H5P.Timer = (function($) {
         return;
       }
 
-      // use latest ID
-      var id = getNextNotificationId();
-
       // add notification to existing ones
       var notification = {
         'id': id,
@@ -277,10 +331,12 @@ H5P.Timer = (function($) {
      * @todo make private
      */
     self.checkNotifications = function() {
+      console.log(JSON.stringify(notifications));
       for (var type = Timer.TYPE_CLOCK; type <= Timer.TYPE_RUNNING; type++) {
         var alerts = $.grep(notifications, function(item) {
           return item.type === type;
         });
+        // check for timing
         alerts.forEach(function(element) {
           element.callback.apply(this, element.params);
           self.clearNotification(element.id);
@@ -297,10 +353,11 @@ H5P.Timer = (function($) {
                 newTime = self.getRunningTime() + element.repeat;
                 break;
             }
-            // TODO: make new notification (requires update of notify()
+            // TODO: make new notification
           }
         });
       }
+      console.log(JSON.stringify(notifications));
     }
   }
 
