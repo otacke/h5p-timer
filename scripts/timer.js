@@ -5,10 +5,7 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: something like "notifyAfter(milliSeconds, callback, params)"
- * TODO: something like "notifyIn(milliSeconds, callback, params)"
- * TODO: something like "notifyEvery(milliSeconds, callback, params)"
- * TODO: something like a ChangeListener?
+ * TODO: possibly something like dehumanize, so you could enter timecode for notifications
  *
  * @param {H5P.jQuery} $
  */
@@ -73,7 +70,8 @@ H5P.Timer = (function($) {
     self.getRunningTime = function() {
       if (status !== Timer.STOPPED) {
         return (new Date().getTime() - firstDate);
-      } else {
+      }
+      else {
         if (!lastDate) {
           return 0;
         }
@@ -116,7 +114,8 @@ H5P.Timer = (function($) {
       }
       if (!Number.isInteger(direction)) {
         mode = Timer.FORWARD;
-      } else {
+      }
+      else {
         mode = direction;
       }
       if (status === Timer.STOPPED) {
@@ -196,7 +195,7 @@ H5P.Timer = (function($) {
      * @param {Object} params - parameters for the callback function.
      * @returns {Number} ID of the notification passed by notify().
      */
-    self.notifyAt = function (type, calltime, callback, params) {
+    self.notifyAt = function(type, calltime, callback, params) {
       return notify(
         getNextNotificationId(),
         type,
@@ -215,17 +214,19 @@ H5P.Timer = (function($) {
      * @param {Object} params - parameters for the callback function.
      * @returns {Number} ID of the notification passed by notify().
      */
-    self.notifyIn = function (type, time, callback, params) {
+    self.notifyIn = function(type, time, callback, params) {
       if (!Number.isInteger(time)) {
         return;
       }
       else {
         time = Math.max(time, interval);
         if (type === Timer.TYPE_CLOCK) {
+          // clock could run running backwards
           time *= mode;
         }
       }
 
+      // calculate time for calling
       switch (type) {
         case Timer.TYPE_CLOCK:
           time += self.getClockTime();
@@ -257,7 +258,8 @@ H5P.Timer = (function($) {
      * @param {Object} params - parameters for the callback function.
      * @returns {Number} ID passed by notify().
      */
-    self.notifyEvery = function (type, startTime = new Date().getTime(), repeat, callback, params) {
+    self.notifyEvery = function(type, startTime = new Date().getTime(),
+      repeat, callback, params) {
       return notify(
         getNextNotificationId(),
         type,
@@ -382,6 +384,7 @@ H5P.Timer = (function($) {
               }
               break;
           }
+
           if (triggerNotification === true) {
             element.callback.apply(this, element.params);
             self.clearNotification(element.id);
@@ -389,7 +392,8 @@ H5P.Timer = (function($) {
               var newTime;
               switch (element.type) {
                 case (Timer.TYPE_CLOCK):
-                  newTime = self.getClockTime() + element.repeat * mode;
+                  newTime = self.getClockTime() + element.repeat *
+                    mode;
                   break;
                 case (Timer.TYPE_PLAYING):
                   newTime = self.getPlayingTime() + element.repeat;
@@ -466,7 +470,8 @@ H5P.Timer = (function($) {
         seconds: Math.round(milliSeconds / 1000),
         tenthSeconds: Math.round(milliSeconds / 100)
       }
-    } else {
+    }
+    else {
       timeElements = toTimecodeElements(milliSeconds);
     }
 
