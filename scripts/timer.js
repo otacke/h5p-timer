@@ -181,6 +181,14 @@ H5P.Timer = (function($) {
     }
 
     /**
+     * Get next notification id.
+     * @returns {Number} id - The next id.
+     */
+    var getNextNotificationId = function() {
+      return notificationsIdCounter++;
+    }
+
+    /**
      * Add a notification.
      * @param {number} type - Clock Time, Playing Time or Running Time.
      * @param {number} calltime - Time when notification is triggered.
@@ -238,8 +246,7 @@ H5P.Timer = (function($) {
       }
 
       // use latest ID
-      var id = notificationsIdCounter;
-      notificationsIdCounter++;
+      var id = getNextNotificationId();
 
       // add notification to existing ones
       var notification = {
@@ -274,7 +281,6 @@ H5P.Timer = (function($) {
         var alerts = $.grep(notifications, function(item) {
           return item.type === type;
         });
-        // TODO: check for timing
         alerts.forEach(function(element) {
           element.callback.apply(this, element.params);
           self.clearNotification(element.id);
