@@ -5,7 +5,7 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: possibly something like dehumanize, so you could enter timecode for notifications
+ * TODO: possibly something like Timer.toMilliSeconds, so you could enter a timecode for notifications
  *
  * @param {H5P.jQuery} $
  */
@@ -81,7 +81,7 @@ H5P.Timer = (function($) {
 
     /**
      * Get one of the times
-     * @param {number} [type] - Type of the time to get.
+     * @param {number} [type=Timer.TYPE_CLOCK] - Type of the time to get.
      * @returns {number} Clock Time, Playing Time or Running Time.
      */
     self.getTime = function(type = Timer.TYPE_CLOCK) {
@@ -292,7 +292,6 @@ H5P.Timer = (function($) {
       if (!Number.isInteger(calltime)) {
         return;
       }
-      // callback must be a function
       if (!callback instanceof Function) {
         return;
       }
@@ -343,7 +342,7 @@ H5P.Timer = (function($) {
     var checkNotifications = function() {
       notifications.forEach(function(element) {
         /*
-         * only trigger if clock time is in the past
+         * trigger if notification time is in the past
          * which means calltime >= Clock Time if mode is BACKWARD (= -1)
          */
         var backwards = (element.type === Timer.TYPE_CLOCK) ? mode : 1;
@@ -403,8 +402,7 @@ H5P.Timer = (function($) {
    * @param {boolean} [rounded=false] - If true, element value will be rounded.
    * @return {number} The time element.
    */
-  Timer.extractTimeElement = function(milliSeconds, element, rounded =
-    false) {
+  Timer.extractTimeElement = function(milliSeconds, element, rounded = false) {
     if (!Number.isInteger(milliSeconds)) {
       return;
     }
