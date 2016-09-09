@@ -7,6 +7,8 @@ var H5P = H5P || {};
  *
  * TODO: possibly something like Timer.toMilliSeconds, so you could enter a timecode for notifications
  * TODO: check if all major browsers can handle default declarations in JavaScript functions
+ * TODO: fix setting notifications in countdown mode -> notifications can't be set before playing
+ * TODO: debug notifications
  *
  * @param {H5P.jQuery} $
  */
@@ -264,14 +266,16 @@ H5P.Timer = (function($) {
     /**
      * Set a notification repeatedly (starting from a particular point in time).
      * @param {number} type - Clock time, Playing time or Running time.
-     * @param {number} [startTime] - Time for first triggering.
+     * @param {number} startTime - Time for first triggering.
      * @param {number} repeat - Time interval after which to repeat the notification.
      * @callback callback - Callback function.
      * @param {Object} params - parameters for the callback function.
      * @returns {number} ID passed by notify().
      */
-    self.notifyEvery = function(type, startTime = new Date().getTime(),
-      repeat, callback, params) {
+    self.notifyEvery = function(type, startTime, repeat, callback, params) {
+      if (startTime === undefined) {
+        startTime = self.getTime(type);
+      }
       return notify(
         getNextNotificationId(),
         type,
@@ -349,6 +353,7 @@ H5P.Timer = (function($) {
      */
     var checkNotifications = function() {
       var backwards = 1;
+      self.showNotifications();
       notifications.forEach(function(element) {
         /*
          * trigger if notification time is in the past
@@ -375,6 +380,10 @@ H5P.Timer = (function($) {
           }
         }
       });
+    }
+    
+    self.showNotifications = function() {
+      console.log(JSON.stringify(notifications));
     }
   }
 
