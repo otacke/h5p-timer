@@ -320,7 +320,7 @@ H5P.Timer = (function($) {
        * which means calltime >= Clock Time if mode is BACKWARD (= -1)
        */
       backwards = (type === Timer.TYPE_CLOCK) ? mode : 1;
-      if (calltime <= self.getTime(type) * backwards) {
+      if (calltime * backwards <= self.getTime(type) * backwards) {
         return;
       }
 
@@ -353,14 +353,13 @@ H5P.Timer = (function($) {
      */
     var checkNotifications = function() {
       var backwards = 1;
-      self.showNotifications();
       notifications.forEach(function(element) {
         /*
          * trigger if notification time is in the past
          * which means calltime >= Clock Time if mode is BACKWARD (= -1)
          */
         backwards = (element.type === Timer.TYPE_CLOCK) ? mode : 1;
-        if (element.calltime <= self.getTime(element.type) * backwards) {
+        if (element.calltime * backwards <= self.getTime(element.type) * backwards) {
           // notify callback function
           element.callback.apply(this, element.params);
 
@@ -380,10 +379,6 @@ H5P.Timer = (function($) {
           }
         }
       });
-    }
-    
-    self.showNotifications = function() {
-      console.log(JSON.stringify(notifications));
     }
   }
 
