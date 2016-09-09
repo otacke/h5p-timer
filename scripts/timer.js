@@ -446,7 +446,7 @@ H5P.Timer = (function($) {
    */
   Timer.toTimecode = function(milliSeconds) {
     var timecodeElements = null;
-    var timecode = '';    var timecode = '';
+    var timecode = '';
 
     if (!Number.isInteger(milliSeconds)) {
       return;
