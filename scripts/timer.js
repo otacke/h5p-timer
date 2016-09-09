@@ -72,12 +72,7 @@ H5P.Timer = (function($) {
         return (new Date().getTime() - firstDate);
       }
       else {
-        if (!lastDate) {
-          return 0;
-        }
-        else {
-          return lastDate.getTime() - firstDate;
-        }
+        return (!lastDate) ? 0 : lastDate.getTime() - firstDate;
       }
     }
 
@@ -112,12 +107,7 @@ H5P.Timer = (function($) {
       if (status === Timer.PLAYING) {
         return;
       }
-      if (!Number.isInteger(direction)) {
-        mode = Timer.FORWARD;
-      }
-      else {
-        mode = direction;
-      }
+      mode = (!Number.isInteger(direction)) ? Timer.FORWARD : direction;
       if (status === Timer.STOPPED) {
         self.reset();
       }
@@ -218,12 +208,10 @@ H5P.Timer = (function($) {
       if (!Number.isInteger(time)) {
         return;
       }
-      else {
-        time = Math.max(time, interval);
-        if (type === Timer.TYPE_CLOCK) {
-          // clock could run running backwards
-          time *= mode;
-        }
+      time = Math.max(time, interval);
+      if (type === Timer.TYPE_CLOCK) {
+        // clock could run running backwards
+        time *= mode;
       }
 
       // calculate time for calling
@@ -236,6 +224,9 @@ H5P.Timer = (function($) {
           break;
         case Timer.TYPE_RUNNING:
           time += self.getRunningTime();
+          break;
+        default:
+          time += self.getClockTime();
           break;
       }
 
@@ -316,9 +307,7 @@ H5P.Timer = (function($) {
         if (!Number.isInteger(repeat)) {
           return;
         }
-        else {
-          repeat = Math.max(repeat, interval);
-        }
+        repeat = Math.max(repeat, interval);
       }
       // callback must be a function
       if (!callback instanceof Function) {
@@ -383,6 +372,8 @@ H5P.Timer = (function($) {
                 triggerNotification = true;
               }
               break;
+            default:
+              break;
           }
 
           if (triggerNotification === true) {
@@ -392,14 +383,15 @@ H5P.Timer = (function($) {
               var newTime;
               switch (element.type) {
                 case (Timer.TYPE_CLOCK):
-                  newTime = self.getClockTime() + element.repeat *
-                    mode;
+                  newTime = self.getClockTime() + element.repeat * mode;
                   break;
                 case (Timer.TYPE_PLAYING):
                   newTime = self.getPlayingTime() + element.repeat;
                   break;
                 case (Timer.TYPE_RUNNING):
                   newTime = self.getRunningTime() + element.repeat;
+                  break;
+                default:
                   break;
               }
               // rebuild notification if it should be repeated
