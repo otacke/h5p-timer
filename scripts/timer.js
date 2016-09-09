@@ -51,7 +51,7 @@ H5P.Timer = (function($) {
      * Get the time that's on the clock.
      * @return {number} The time on the clock.
      */
-    self.getClockTime = function() {
+    var getClockTime = function() {
       return clockTimeMilliSeconds;
     }
 
@@ -59,7 +59,7 @@ H5P.Timer = (function($) {
      * Get the time the timer was playing so far.
      * @return {number} The time played.
      */
-    self.getPlayingTime = function() {
+    var getPlayingTime = function() {
       return playingTimeMilliSeconds;
     }
 
@@ -67,12 +67,36 @@ H5P.Timer = (function($) {
      * Get the total running time from play() until stop().
      * @return {number} The total running time.
      */
-    self.getRunningTime = function() {
+    var getRunningTime = function() {
       if (status !== Timer.STOPPED) {
         return (new Date().getTime() - firstDate);
       }
       else {
         return (!lastDate) ? 0 : lastDate.getTime() - firstDate;
+      }
+    }
+
+    /**
+     * Get one of the times
+     * @param {number} [type] - Type of the time to get.
+     * @returns {number} Clock Time, Playing Time or Running Time.
+     */
+    self.getTime = function(type = Timer.TYPE_CLOCK) {
+      if (!Number.isInteger(type)) {
+        return;
+      }
+      switch (type) {
+        case Timer.TYPE_CLOCK:
+          return getClockTime();
+          break;
+        case Timer.TYPE_PLAYING:
+          return getPlayingTime();
+          break;
+        case Timer.TYPE_RUNNING:
+          return getRunningTime();
+          break;
+        default:
+          return getClockTime();
       }
     }
 
@@ -213,22 +237,7 @@ H5P.Timer = (function($) {
         // clock could run running backwards
         time *= mode;
       }
-
-      // calculate time for calling
-      switch (type) {
-        case Timer.TYPE_CLOCK:
-          time += self.getClockTime();
-          break;
-        case Timer.TYPE_PLAYING:
-          time += self.getPlayingTime();
-          break;
-        case Timer.TYPE_RUNNING:
-          time += self.getRunningTime();
-          break;
-        default:
-          time += self.getClockTime();
-          break;
-      }
+      time += self.getTime(type);
 
       return notify(
         getNextNotificationId(),
@@ -277,31 +286,10 @@ H5P.Timer = (function($) {
       if (!Number.isInteger(calltime)) {
         return;
       }
-
-      // calltime must be > current time (forward) / < current time (backward)
-      switch (type) {
-        case (Timer.TYPE_CLOCK):
-          if ((calltime >= self.getClockTime()) && (mode === Timer.BACKWARD)) {
-            return;
-          }
-          if ((calltime <= self.getClockTime()) && (mode === Timer.FORWARD)) {
-            return;
-          }
-          break;
-        case (Timer.TYPE_PLAYING):
-          if (calltime <= self.getPlayingTime()) {
-            return;
-          }
-          break;
-        case (Timer.TYPE_RUNNING):
-          if (calltime <= self.getRunningTime()) {
-            return;
-          }
-          break;
-        default:
-          return;
+      // callback must be a function
+      if (!callback instanceof Function) {
+        return;
       }
-
       // repeat must be >= interval (ideally multiple of interval)
       if (repeat !== undefined) {
         if (!Number.isInteger(repeat)) {
@@ -309,8 +297,12 @@ H5P.Timer = (function($) {
         }
         repeat = Math.max(repeat, interval);
       }
-      // callback must be a function
-      if (!callback instanceof Function) {
+      /*
+       * only accept notification if its set for the future
+       * which means calltime >= Clock Time if mode is BACKWARD (= -1)
+       */
+      var backwards = (type === Timer.TYPE_CLOCK) ? mode : 1;
+      if (calltime <= self.getTime(type) * backwards) {
         return;
       }
 
@@ -342,67 +334,32 @@ H5P.Timer = (function($) {
      * Check notifications for necessary callbacks
      */
     var checkNotifications = function() {
-      for (var type = Timer.TYPE_CLOCK; type <= Timer.TYPE_RUNNING; type++) {
-        var alerts = $.grep(notifications, function(item) {
-          return item.type === type;
-        });
-        alerts.forEach(function(element) {
-          // TODO: CLEAN UP THIS MESS!!!
-          var triggerNotification = false;
-          switch (element.type) {
-            case Timer.TYPE_CLOCK:
-              if ((element.calltime >= self.getClockTime()) && (mode === Timer.BACKWARD)) {
-                triggerNotification = true;
-              }
-              if ((element.calltime <= self.getClockTime()) && (mode === Timer.FORWARD)) {
-                triggerNotification = true;
-              }
-              break;
-            case Timer.TYPE_PLAYING:
-              if (element.calltime <= self.getPlayingTime()) {
-                triggerNotification = true;
-              }
-              break;
-            case Timer.TYPE_RUNNING:
-              if (element.calltime <= self.getRunningTime()) {
-                triggerNotification = true;
-              }
-              break;
-            default:
-              break;
-          }
+      notifications.forEach(function(element) {
+        /*
+         * only trigger if clock time is in the past
+         * which means calltime >= Clock Time if mode is BACKWARD (= -1)
+         */
+        var backwards = (element.type === Timer.TYPE_CLOCK) ? mode : 1;
+        if (element.calltime <= self.getTime(element.type) * backwards) {
+          // notify callback function
+          element.callback.apply(this, element.params);
 
-          if (triggerNotification === true) {
-            element.callback.apply(this, element.params);
-            self.clearNotification(element.id);
-            if (element.repeat) {
-              var newTime;
-              switch (element.type) {
-                case (Timer.TYPE_CLOCK):
-                  newTime = self.getClockTime() + element.repeat * mode;
-                  break;
-                case (Timer.TYPE_PLAYING):
-                  newTime = self.getPlayingTime() + element.repeat;
-                  break;
-                case (Timer.TYPE_RUNNING):
-                  newTime = self.getRunningTime() + element.repeat;
-                  break;
-                default:
-                  break;
-              }
-              // rebuild notification if it should be repeated
-              notify(
-                element.id,
-                element.type,
-                newTime,
-                element.repeat,
-                element.callback,
-                element.params
-              );
-            }
+          // remove notification
+          self.clearNotification(element.id);
+
+          // rebuild notification if it should be repeated
+          if (element.repeat) {
+            notify(
+              element.id,
+              element.type,
+              self.getTime(element.type) + element.repeat * backwards,
+              element.repeat,
+              element.callback,
+              element.params
+            );
           }
-        });
-      }
+        }
+      });
     }
   }
 
