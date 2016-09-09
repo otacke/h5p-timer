@@ -351,15 +351,11 @@ H5P.Timer = (function($) {
           var triggerNotification = false;
           switch (element.type) {
             case Timer.TYPE_CLOCK:
-              if (mode === Timer.FORWARD) {
-                if (element.calltime <= self.getClockTime()) {
-                  triggerNotification = true;
-                }
+              if ((element.calltime >= self.getClockTime()) && (mode === Timer.BACKWARD)) {
+                triggerNotification = true;
               }
-              else {
-                if (element.calltime >= self.getClockTime()) {
-                  triggerNotification = true;
-                }
+              if ((element.calltime <= self.getClockTime()) && (mode === Timer.FORWARD)) {
+                triggerNotification = true;
               }
               break;
             case Timer.TYPE_PLAYING:
