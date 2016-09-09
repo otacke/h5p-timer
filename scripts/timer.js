@@ -7,8 +7,6 @@ var H5P = H5P || {};
  *
  * TODO: possibly something like Timer.toMilliSeconds, so you could enter a timecode for notifications
  * TODO: check if all major browsers can handle default declarations in JavaScript functions
- * TODO: fix setting notifications in countdown mode -> notifications can't be set before playing
- * TODO: debug notifications
  *
  * @param {H5P.jQuery} $
  */
@@ -286,7 +284,7 @@ H5P.Timer = (function($) {
     }
 
     /**
-     * Add a notification.
+     * Add a notification. Won't be triggered if set in the past!
      * @private
      * @param {number} type - Clock Time, Playing Time or Running Time.
      * @param {number} calltime - Time when notification is triggered.
@@ -296,8 +294,6 @@ H5P.Timer = (function($) {
      * @return {number} The ID of the notification.
      */
     var notify = function(id, type, calltime, repeat, callback, params) {
-      var backwards = 1;
-
       //type checks
       if (!Number.isInteger(type)) {
         return;
@@ -314,14 +310,6 @@ H5P.Timer = (function($) {
           return;
         }
         repeat = Math.max(repeat, interval);
-      }
-      /*
-       * only accept notification if its set for the future
-       * which means calltime >= Clock Time if mode is BACKWARD (= -1)
-       */
-      backwards = (type === Timer.TYPE_CLOCK) ? mode : 1;
-      if (calltime * backwards <= self.getTime(type) * backwards) {
-        return;
       }
 
       // add notification to existing ones
