@@ -6,6 +6,7 @@ var H5P = H5P || {};
  * General purpose timer that can be used by other H5P libraries.
  *
  * TODO: possibly something like Timer.toMilliSeconds, so you could enter a timecode for notifications
+ * TODO: check if all major browsers can handle default declarations in JavaScript functions
  *
  * @param {H5P.jQuery} $
  */
@@ -108,23 +109,25 @@ H5P.Timer = (function($) {
      * @param {number} time - The time in milliseconds.
      */
     self.setClockTime = function(time) {
-      if (Number.isInteger(time)) {
-        clockTimeMilliSeconds = time;
+      if (!Number.isInteger(time)) {
+        return;
       }
+      clockTimeMilliSeconds = time;
     }
 
     /**
      * Initialize the timer.
      */
     self.reset = function() {
-      if (status === Timer.STOPPED) {
-        // Don't erase Clock Time if counting down
-        if (mode === Timer.FORWARD) {
-          clockTimeMilliSeconds = 0;
-        }
-        playingTimeMilliSeconds = 0;
-        firstDate = undefined;
+      if (status !== Timer.STOPPED) {
+        return;
       }
+      // Don't erase Clock Time if counting down
+      if (mode === Timer.FORWARD) {
+        clockTimeMilliSeconds = 0;
+      }
+      playingTimeMilliSeconds = 0;
+      firstDate = null;
     }
 
     /**
@@ -139,7 +142,7 @@ H5P.Timer = (function($) {
       if (status === Timer.STOPPED) {
         self.reset();
       }
-      if (!firstDate) {
+      if (firstDate === null) {
         firstDate = new Date();
       }
       startDate = new Date();
@@ -161,10 +164,11 @@ H5P.Timer = (function($) {
      * Stop the timer.
      */
     self.stop = function() {
-      if (status !== Timer.STOPPED) {
-        lastDate = new Date();
-        status = Timer.STOPPED;
+      if (status === Timer.STOPPED) {
+        return;
       }
+      lastDate = new Date();
+      status = Timer.STOPPED;
     }
 
     /**
@@ -185,6 +189,7 @@ H5P.Timer = (function($) {
         return;
       }
 
+      // update times
       if (status === Timer.PLAYING) {
         currentMilliSeconds = new Date().getTime() - startDate;
         clockTimeMilliSeconds += currentMilliSeconds * mode;
