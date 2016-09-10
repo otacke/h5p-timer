@@ -529,7 +529,7 @@ H5P.Timer = (function($) {
   };
 
   /**
-   * Convert timecode to milliseconds
+   * Convert timecode to milliseconds.
    *
    * @public
    * @param {string} timecode - The timecode.
@@ -559,15 +559,14 @@ H5P.Timer = (function($) {
 
     tail = timecode.split('.')[1];
     if (tail) {
-      tenthSeconds = parseInt(tail);
-      tenthSeconds = Math.round(tenthSeconds / Math.pow(10, (tail.length-1)));
+      tenthSeconds = Math.round(parseInt(tail) / Math.pow(10, (tail.length-1)));
     }
 
     return (hours * 36000 + minutes * 600 + seconds * 10 + tenthSeconds) * 100;
   }
 
   /**
-   * Check if a string is a timecode
+   * Check if a string is a timecode.
    *
    * @private
    * @param {string} value - String to check
