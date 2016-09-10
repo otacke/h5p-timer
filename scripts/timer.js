@@ -5,7 +5,7 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: possibly something like Timer.toMilliSeconds, so you could enter a timecode for notifications
+ * TODO: change notifications to accept timecodes as parameter as well
  * TODO: check if all major browsers can handle default declarations in JavaScript functions
  *
  * @param {H5P.jQuery} $
@@ -527,6 +527,62 @@ H5P.Timer = (function($) {
 
     return timecode;
   };
+
+  /**
+   * Convert timecode to milliseconds
+   *
+   * @public
+   * @param {string} timecode - The timecode.
+   * @return {number} Milliseconds derived from timecode
+   */
+  Timer.toMilliseconds = function(timecode) {
+    var head = [];
+    var tail = '';
+
+    var hours        = 0;
+    var minutes      = 0;
+    var seconds      = 0;
+    var tenthSeconds = 0;
+
+    if (!isTimecode(timecode)) {
+      return;
+    }
+
+    // We can now be sure everything can be converted to a legit integer in range
+    head = timecode.split('.')[0].split(':');
+    while (head.length < 3) {
+      head = ['0'].concat(head);
+    }
+    hours   = parseInt(head[0]);
+    minutes = parseInt(head[1]);
+    seconds = parseInt(head[2]);
+
+    tail = timecode.split('.')[1];
+    if (tail) {
+      tenthSeconds = parseInt(tail);
+      tenthSeconds = Math.round(tenthSeconds / Math.pow(10, (tail.length-1)));
+    }
+
+    return (hours * 36000 + minutes * 600 + seconds * 10 + tenthSeconds) * 100;
+  }
+
+  /**
+   * Check if a string is a timecode
+   *
+   * @private
+   * @param {string} value - String to check
+   * @return {boolean} true, if string is a timecode
+   */
+  var isTimecode = function(value) {
+    // Don't insist on leading zeros for minutes and seconds
+     var REG_TIMECODE = /((\d+:)?(([0-5])?\d:)?(([0-5])?\d)(\.\d+)?)/;
+
+    if ($.type(value) !== 'string') {
+      return;
+    }
+
+    return (value === value.match(REG_TIMECODE)[0]) ? true : false;
+  }
 
   // Timer states
   /** @constant {number} */
