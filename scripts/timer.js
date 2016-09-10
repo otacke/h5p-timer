@@ -55,6 +55,16 @@ H5P.Timer = (function($) {
     }
 
     /**
+     * Get the timer mode.
+     *
+     * @public
+     * @return {number} The timer mode.
+     */
+    self.getMode = function() {
+      return mode;
+    }
+
+    /**
      * Get the time that's on the clock.
      *
      * @public
@@ -154,16 +164,28 @@ H5P.Timer = (function($) {
     }
 
     /**
+     * Set timer mode.
+     *
+     * @public
+     * @param {number} mode - The timer mode.
+     */
+    self.setMode = function(direction) {
+      if ((direction !== Timer.FORWARD) && (direction !== Timer.BACKWARD)) {
+        return;
+      }
+      mode = direction;
+    }
+
+    /**
      * Start the timer.
      *
      * @public
-     * @param {number} [direction=Timer.FORWARD] - Indicate counting up or down.
+     * @param {number} [direction] - Indicate counting up or down.
      */
-    self.play = function(direction = Timer.FORWARD) {
+    self.play = function() {
       if (status === Timer.PLAYING) {
         return;
       }
-      mode = (!Number.isInteger(direction)) ? Timer.FORWARD : direction;
       if (!firstDate) {
         firstDate = new Date();
       }
@@ -278,7 +300,7 @@ H5P.Timer = (function($) {
       }
       time = Math.max(time, interval);
       if (type === Timer.TYPE_CLOCK) {
-        // clock could run running backwards
+        // clock could be running backwards
         time *= mode;
       }
       time += self.getTime(type);
