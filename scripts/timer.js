@@ -5,7 +5,6 @@ var H5P = H5P || {};
  *
  * General purpose timer that can be used by other H5P libraries.
  *
- * TODO: change notifications to accept timecodes as parameter as well
  * TODO: check if all major browsers can handle default declarations in JavaScript functions
  *
  * @param {H5P.jQuery} $
@@ -180,7 +179,6 @@ H5P.Timer = (function($) {
      * Start the timer.
      *
      * @public
-     * @param {number} [direction] - Indicate counting up or down.
      */
     self.play = function() {
       if (status === Timer.PLAYING) {
@@ -274,7 +272,7 @@ H5P.Timer = (function($) {
      * @return {number} ID of the notification passed by notify().
      */
     self.notifyAt = function(type, calltime, callback, params) {
-      return notify(
+       return notify(
         getNextNotificationId(),
         type,
         calltime,
@@ -295,6 +293,9 @@ H5P.Timer = (function($) {
      * @return {number} ID of the notification passed by notify().
      */
     self.notifyIn = function(type, time, callback, params) {
+      if ($.type(time) === 'string') {
+        time = Timer.toMilliseconds(time);
+      }
       if (!Number.isInteger(time)) {
         return;
       }
@@ -330,6 +331,7 @@ H5P.Timer = (function($) {
       if (startTime === undefined) {
         startTime = self.getTime(type);
       }
+
       return notify(
         getNextNotificationId(),
         type,
@@ -355,6 +357,9 @@ H5P.Timer = (function($) {
       if (!Number.isInteger(type)) {
         return;
       }
+      if ($.type(calltime) === 'string') {
+        calltime = Timer.toMilliseconds(calltime);
+      }
       if (!Number.isInteger(calltime)) {
         return;
       }
@@ -362,6 +367,9 @@ H5P.Timer = (function($) {
         return;
       }
       // repeat must be >= interval (ideally multiple of interval)
+      if ($.type(repeat) === 'string') {
+        repeat = Timer.toMilliseconds(repeat);
+      }
       if (repeat !== undefined) {
         if (!Number.isInteger(repeat)) {
           return;
