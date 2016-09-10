@@ -141,9 +141,16 @@ H5P.Timer = (function($) {
       if (status !== Timer.STOPPED) {
         return;
       }
-      clockTimeMilliSeconds = 0;
+      clockTimeMilliSeconds   = 0;
       playingTimeMilliSeconds = 0;
+
       firstDate = null;
+      lastDate  = null;
+
+      loop = null;
+
+      notifications = [];
+      notificationsIdCounter = 0;
     }
 
     /**
