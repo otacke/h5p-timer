@@ -14,16 +14,20 @@ H5P.Timer = (function($) {
   /**
    * Create a timer.
    * @constructor
+   *
    * @param {number} [interval=Timer.DEFAULT_INTERVAL] - The update interval.
    */
   function Timer(interval = Timer.DEFAULT_INTERVAL) {
     var self = this;
 
     // time on clock and the time the clock has run
-    var clockTimeMilliSeconds, playingTimeMilliSeconds = 0;
+    var clockTimeMilliSeconds   = 0;
+    var playingTimeMilliSeconds = 0;
 
     // indicators for total running time of the timer
-    var firstDate, startDate, lastDate = null;
+    var firstDate = null;
+    var startDate = null;
+    var lastDate  = null;
 
     // update loop
     var loop = null;
@@ -42,6 +46,8 @@ H5P.Timer = (function($) {
 
     /**
      * Get the timer status.
+     *
+     * @public
      * @return {number} The timer status.
      */
     self.getStatus = function() {
@@ -50,6 +56,8 @@ H5P.Timer = (function($) {
 
     /**
      * Get the time that's on the clock.
+     *
+     * @public
      * @private
      * @return {number} The time on the clock.
      */
@@ -59,6 +67,7 @@ H5P.Timer = (function($) {
 
     /**
      * Get the time the timer was playing so far.
+     *
      * @private
      * @return {number} The time played.
      */
@@ -68,10 +77,14 @@ H5P.Timer = (function($) {
 
     /**
      * Get the total running time from play() until stop().
+     *
      * @private
      * @return {number} The total running time.
      */
     var getRunningTime = function() {
+      if (!firstDate) {
+        return 0;
+      }
       if (status !== Timer.STOPPED) {
         return (new Date().getTime() - firstDate.getTime());
       }
@@ -81,9 +94,11 @@ H5P.Timer = (function($) {
     }
 
     /**
-     * Get one of the times
+     * Get one of the times.
+     *
+     * @public
      * @param {number} [type=Timer.TYPE_CLOCK] - Type of the time to get.
-     * @returns {number} Clock Time, Playing Time or Running Time.
+     * @return {number} Clock Time, Playing Time or Running Time.
      */
     self.getTime = function(type = Timer.TYPE_CLOCK) {
       if (!Number.isInteger(type)) {
@@ -106,6 +121,8 @@ H5P.Timer = (function($) {
 
     /**
      * Set the starting time.
+     *
+     * @public
      * @param {number} time - The time in milliseconds.
      */
     self.setClockTime = function(time) {
@@ -116,22 +133,23 @@ H5P.Timer = (function($) {
     }
 
     /**
-     * Initialize the timer.
+     * Reset the timer.
+     *
+     * @public
      */
     self.reset = function() {
       if (status !== Timer.STOPPED) {
         return;
       }
-      // Don't erase Clock Time if counting down
-      if (mode === Timer.FORWARD) {
-        clockTimeMilliSeconds = 0;
-      }
+      clockTimeMilliSeconds = 0;
       playingTimeMilliSeconds = 0;
       firstDate = null;
     }
 
     /**
      * Start the timer.
+     *
+     * @public
      * @param {number} [direction=Timer.FORWARD] - Indicate counting up or down.
      */
     self.play = function(direction = Timer.FORWARD) {
@@ -139,10 +157,7 @@ H5P.Timer = (function($) {
         return;
       }
       mode = (!Number.isInteger(direction)) ? Timer.FORWARD : direction;
-      if (status === Timer.STOPPED) {
-        self.reset();
-      }
-      if (firstDate === null) {
+      if (!firstDate) {
         firstDate = new Date();
       }
       startDate = new Date();
@@ -152,6 +167,8 @@ H5P.Timer = (function($) {
 
     /**
      * Pause the timer.
+     *
+     * @public
      */
     self.pause = function() {
       if (status !== Timer.PLAYING) {
@@ -162,6 +179,8 @@ H5P.Timer = (function($) {
 
     /**
      * Stop the timer.
+     *
+     * @public
      */
     self.stop = function() {
       if (status === Timer.STOPPED) {
@@ -173,6 +192,7 @@ H5P.Timer = (function($) {
 
     /**
      * Update the timer until Timer.STOPPED.
+     *
      * @private
      */
     var update = function() {
@@ -206,8 +226,9 @@ H5P.Timer = (function($) {
 
     /**
      * Get next notification id.
+     *
      * @private
-     * @returns {number} id - The next id.
+     * @return {number} id - The next id.
      */
     var getNextNotificationId = function() {
       return notificationsIdCounter++;
@@ -215,11 +236,13 @@ H5P.Timer = (function($) {
 
     /**
      * Set a notification at a particular point in time.
+     *
+     * @public
      * @param {number} type - Clock time, Playing time or Running time.
      * @param {number} calltime - Time when notification is triggered.
      * @callback callback - Callback function.
      * @param {Object} params - parameters for the callback function.
-     * @returns {number} ID of the notification passed by notify().
+     * @return {number} ID of the notification passed by notify().
      */
     self.notifyAt = function(type, calltime, callback, params) {
       return notify(
@@ -234,11 +257,13 @@ H5P.Timer = (function($) {
 
     /**
      * Set a notification in a particular time distance.
+     *
+     * @public
      * @param {number} type - Clock time, Playing time or Running time.
      * @param {number} time - Time distance for triggering.
      * @callback callback - Callback function.
      * @param {Object} params - parameters for the callback function.
-     * @returns {number} ID of the notification passed by notify().
+     * @return {number} ID of the notification passed by notify().
      */
     self.notifyIn = function(type, time, callback, params) {
       if (!Number.isInteger(time)) {
@@ -263,12 +288,14 @@ H5P.Timer = (function($) {
 
     /**
      * Set a notification repeatedly (starting from a particular point in time).
+     *
+     * @public
      * @param {number} type - Clock time, Playing time or Running time.
      * @param {number} startTime - Time for first triggering.
      * @param {number} repeat - Time interval after which to repeat the notification.
      * @callback callback - Callback function.
      * @param {Object} params - parameters for the callback function.
-     * @returns {number} ID passed by notify().
+     * @return {number} ID passed by notify().
      */
     self.notifyEvery = function(type, startTime, repeat, callback, params) {
       if (startTime === undefined) {
@@ -284,7 +311,8 @@ H5P.Timer = (function($) {
     }
 
     /**
-     * Add a notification. Won't be triggered if set in the past!
+     * Add a notification.
+     *
      * @private
      * @param {number} type - Clock Time, Playing Time or Running Time.
      * @param {number} calltime - Time when notification is triggered.
@@ -327,6 +355,8 @@ H5P.Timer = (function($) {
 
     /**
      * Remove a notification.
+     *
+     * @public
      * @param {number} id - The id of the notification.
      */
     self.clearNotification = function(id) {
@@ -336,7 +366,8 @@ H5P.Timer = (function($) {
     }
 
     /**
-     * Check notifications for necessary callbacks
+     * Check notifications for necessary callbacks.
+     *
      * @private
      */
     var checkNotifications = function() {
@@ -372,6 +403,7 @@ H5P.Timer = (function($) {
 
   /**
    * Generate timecode elements from milliseconds.
+   *
    * @private
    * @param {number} milliSeconds - The milliseconds.
    * @return {Object} The timecode elements.
@@ -399,6 +431,8 @@ H5P.Timer = (function($) {
 
   /**
    * Extract humanized time element from time.
+   *
+   * @public
    * @param {number} milliSeconds - The milliSeconds.
    * @param {string} element - Time element: hours, minutes, seconds or tenthSeconds.
    * @param {boolean} [rounded=false] - If true, element value will be rounded.
@@ -433,6 +467,8 @@ H5P.Timer = (function($) {
 
   /**
    * Convert time in milliseconds to timecode.
+   *
+   * @public
    * @param {number} milliSeconds - The time in milliSeconds.
    * @return {string} The humanized timecode.
    */
