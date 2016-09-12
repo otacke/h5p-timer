@@ -589,13 +589,13 @@ H5P.Timer = (function($) {
    */
   var isTimecode = function(value) {
     // Don't insist on leading zeros for minutes and seconds
-    var REG_TIMECODE = /((\d+:)?(([0-5])?\d:)?(([0-5])?\d)(\.\d+)?)/;
+    var reg_timecode = /((\d+:)?(([0-5])?\d:)?(([0-5])?\d)(\.\d+)?)/;
 
     if ($.type(value) !== 'string') {
       return;
     }
 
-    return (value === value.match(REG_TIMECODE)[0]) ? true : false;
+    return (value === value.match(reg_timecode)[0]) ? true : false;
   };
 
   // Timer states
