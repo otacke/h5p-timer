@@ -448,7 +448,11 @@ H5P.Timer = (function($) {
    * @return {Object} The timecode elements.
    */
   var toTimecodeElements = function(milliSeconds) {
-    var hours, minutes, seconds, tenthSeconds = 0;
+    var hours = 0;
+    var minutes = 0;
+    var seconds = 0;
+    var tenthSeconds = 0;
+
     if (!Number.isInteger(milliSeconds)) {
       return;
     }
