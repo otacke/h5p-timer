@@ -136,6 +136,9 @@ H5P.Timer = (function($) {
      * @param {number} time - The time in milliseconds.
      */
     self.setClockTime = function(time) {
+      if ($.type(time) === 'string') {
+        time = Timer.toMilliseconds(time);
+      }
       if (!Number.isInteger(time)) {
         return;
       }
