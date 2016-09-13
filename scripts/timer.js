@@ -97,7 +97,8 @@ H5P.Timer = function ($) {
       }
       if (status !== Timer.STOPPED) {
         return new Date().getTime() - firstDate.getTime();
-      } else {
+      }
+      else {
         return !lastDate ? 0 : lastDate.getTime() - firstDate;
       }
     };
@@ -490,7 +491,8 @@ H5P.Timer = function ($) {
         seconds: Math.round(milliSeconds / 1000),
         tenthSeconds: Math.round(milliSeconds / 100)
       };
-    } else {
+    }
+    else {
       timeElements = toTimecodeElements(milliSeconds);
     }
 
