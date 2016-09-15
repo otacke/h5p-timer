@@ -436,6 +436,10 @@ H5P.Timer = function ($) {
    * @return {Object} The timecode elements.
    */
   var toTimecodeElements = function toTimecodeElements(milliSeconds) {
+    var years = 0;
+    var month = 0;
+    var weeks = 0;
+    var days = 0;
     var hours = 0;
     var minutes = 0;
     var seconds = 0;
@@ -449,10 +453,15 @@ H5P.Timer = function ($) {
     seconds = Math.floor(milliSeconds / 10);
     minutes = Math.floor(seconds / 60);
     hours = Math.floor(minutes / 60);
-    minutes = Math.floor(minutes % 60);
-    seconds = Math.floor(seconds % 60);
-
+    days = Math.floor(hours / 24);
+    weeks = Math.floor(days / 7);
+    month = Math.floor(days / 30.4375); // roughly (30.4375 = mean of 4 years)
+    years = Math.floor(days / 365); // roughly
     return {
+      years: years,
+      month: month,
+      weeks: weeks,
+      days: days,
       hours: hours,
       minutes: minutes,
       seconds: seconds,
@@ -461,7 +470,7 @@ H5P.Timer = function ($) {
   };
 
   /**
-   * Extract humanized time element from time.
+   * Extract humanized time element from time for concatenating.
    *
    * @public
    * @param {number} milliSeconds - The milliSeconds.
@@ -486,8 +495,12 @@ H5P.Timer = function ($) {
 
     if (rounded) {
       timeElements = {
-        hours: Math.round(milliSeconds / 3600000),
-        minutes: Math.round(milliSeconds / 60000),
+        years: Math.round(milliSeconds / (365 * 24 * 60 * 60 * 1000)),
+        month: Math.round(milliSeconds / (30.4375 * 24 * 60 * 60 * 1000)),
+        weeks: Math.round(milliSeconds / (7 * 24 * 60 * 60 * 1000)),
+        days: Math.round(milliSeconds / (24 * 60 * 60 * 1000)),
+        hours: Math.round(milliSeconds / (60 * 60 * 1000)),
+        minutes: Math.round(milliSeconds / (60 * 1000)),
         seconds: Math.round(milliSeconds / 1000),
         tenthSeconds: Math.round(milliSeconds / 100)
       };
@@ -509,25 +522,29 @@ H5P.Timer = function ($) {
   Timer.toTimecode = function (milliSeconds) {
     var timecodeElements = null;
     var timecode = '';
+    var minutes = 0;
+    var seconds = 0;
 
     if (!Number.isInteger(milliSeconds)) {
       return;
     }
 
     timecodeElements = toTimecodeElements(milliSeconds);
+    minutes = Math.floor(timecodeElements['minutes'] % 60);
+    seconds = Math.floor(timecodeElements['seconds'] % 60);
 
     // create timecode
     if (timecodeElements['hours'] > 0) {
       timecode += timecodeElements['hours'] + ":";
     }
-    if (timecodeElements['minutes'] < 10) {
+    if (minutes < 10) {
       timecode += "0";
     }
-    timecode += timecodeElements['minutes'] + ":";
-    if (timecodeElements['seconds'] < 10) {
+    timecode += minutes + ":";
+    if (seconds < 10) {
       timecode += "0";
     }
-    timecode += timecodeElements['seconds'] + ".";
+    timecode += seconds + ".";
     timecode += timecodeElements['tenthSeconds'];
 
     return timecode;
