@@ -134,15 +134,12 @@ H5P.Timer = function ($) {
     };
 
     /**
-     * Set the starting time.
+     * Set the clock time. Know what you're doing, if the clock is running.
      *
      * @public
      * @param {number} time - The time in milliseconds.
      */
     self.setClockTime = function (time) {
-      if (status !== Timer.STOPPED) {
-        return;
-      }
       if ($.type(time) === 'string') {
         time = Timer.toMilliseconds(time);
       }
