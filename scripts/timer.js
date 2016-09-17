@@ -518,12 +518,16 @@ H5P.Timer = function($) {
    * @param {boolean} [rounded=false] - If true, element value will be rounded.
    * @return {number} The time element.
    */
-  Timer.extractTimeElement = function(milliSeconds, element) {
+  Timer.extractTimeElement = function(time, element) {
     var rounded = arguments.length <= 2 || arguments[2] === undefined ?
       false : arguments[2];
 
     var timeElements = null;
-    if (!Number.isInteger(milliSeconds)) {
+
+    if ($.type(time) === 'string') {
+      time = Timer.toMilliseconds(time);
+    }
+    if (!Number.isInteger(time)) {
       return;
     }
     if ($.type(element) !== 'string') {
@@ -535,17 +539,17 @@ H5P.Timer = function($) {
 
     if (rounded) {
       timeElements = {
-        years: Math.round(milliSeconds / 31536000000),
-        month: Math.round(milliSeconds / 2629800000),
-        weeks: Math.round(milliSeconds / 604800000),
-        days: Math.round(milliSeconds / 86400000),
-        hours: Math.round(milliSeconds / 3600000),
-        minutes: Math.round(milliSeconds / 60000),
-        seconds: Math.round(milliSeconds / 1000),
-        tenthSeconds: Math.round(milliSeconds / 100)
+        years: Math.round(time / 31536000000),
+        month: Math.round(time / 2629800000),
+        weeks: Math.round(time / 604800000),
+        days: Math.round(time / 86400000),
+        hours: Math.round(time / 3600000),
+        minutes: Math.round(time / 60000),
+        seconds: Math.round(time / 1000),
+        tenthSeconds: Math.round(time / 100)
       };
     } else {
-      timeElements = toTimecodeElements(milliSeconds);
+      timeElements = toTimecodeElements(time);
     }
 
     return timeElements[element];
