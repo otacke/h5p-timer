@@ -139,7 +139,7 @@ H5P.Timer = function($) {
     };
 
     /**
-     * Set the clock time. Know what you're doing, if the clock is running.
+     * Set the clock time.
      *
      * @public
      * @param {number} time - The time in milliseconds.
@@ -403,6 +403,7 @@ H5P.Timer = function($) {
     /**
      * sets a new starting time for notifications
      *
+     * @private
      * @param elements {Object] elements - The notifications to be updated
      * @param deltaMilliSeconds {Number} - The time difference to be set
      */
@@ -604,7 +605,7 @@ H5P.Timer = function($) {
     var seconds = 0;
     var tenthSeconds = 0;
 
-    if (!isTimecode(timecode)) {
+    if (!Timer.isTimecode(timecode)) {
       return;
     }
 
@@ -630,11 +631,11 @@ H5P.Timer = function($) {
   /**
    * Check if a string is a timecode.
    *
-   * @private
+   * @public
    * @param {string} value - String to check
    * @return {boolean} true, if string is a timecode
    */
-  var isTimecode = function isTimecode(value) {
+  Timer.isTimecode = function (value) {
     // Don't insist on leading zeros for minutes and seconds
     var reg_timecode = /((\d+:)?(([0-5])?\d:)?(([0-5])?\d)(\.\d+)?)/;
 
