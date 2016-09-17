@@ -1,5 +1,3 @@
-'use strict';
-
 var H5P = H5P || {};
 
 /**
