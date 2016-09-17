@@ -24,6 +24,9 @@ H5P.Timer = function ($) {
     var clockTimeMilliSeconds = 0;
     var playingTimeMilliSeconds = 0;
 
+    // used to update recurring notifications
+    var clockUpdateMilliSeconds = 0;
+
     // indicators for total running time of the timer
     var firstDate = null;
     var startDate = null;
@@ -146,6 +149,7 @@ H5P.Timer = function ($) {
       if (!Number.isInteger(time)) {
         return;
       }
+      clockUpdateMilliSeconds = ((time - clockTimeMilliSeconds) * mode < 0) ? time - clockTimeMilliSeconds : 0;
       clockTimeMilliSeconds = time;
     };
 
@@ -394,12 +398,50 @@ H5P.Timer = function ($) {
     };
 
     /**
+     * sets a new starting time for notifications
+     *
+     * @param elements {Object] elements - The notifications to be updated
+     * @param deltaMilliSeconds {Number} - The time difference to be set
+     */
+    var updateNotificationTime = function (elements, deltaMilliSeconds) {
+      if (!Number.isInteger(deltaMilliSeconds)) {
+        return;
+      }
+      elements.forEach(function (element) {
+        // remove notification
+        self.clearNotification(element.id);
+
+        //rebuild notification with new data
+        notify(
+          element.id,
+          element.type,
+          self.getTime(element.type) + deltaMilliSeconds,
+          element.repeat,
+          element.callback,
+          element.params
+        );
+      });
+    };
+
+    /**
      * Check notifications for necessary callbacks.
      *
      * @private
      */
     var checkNotifications = function checkNotifications() {
       var backwards = 1;
+      var elements = [];
+
+      // update recurring clock notifications if clock was changed
+      if (clockUpdateMilliSeconds != 0) {
+        elements = $.grep(notifications, function (item) {
+          return (item.type === Timer.TYPE_CLOCK) && (item.repeat != undefined);
+        });
+        updateNotificationTime(elements, clockUpdateMilliSeconds);
+        clockUpdateMilliSeconds = 0;
+      }
+
+      // check all notifications for triggering
       notifications.forEach(function (element) {
         /*
          * trigger if notification time is in the past
@@ -421,12 +463,14 @@ H5P.Timer = function ($) {
               self.getTime(element.type) + element.repeat * backwards,
               element.repeat,
               element.callback,
-              element.params);
+              element.params
+            );
           }
         }
       });
     };
   }
+
 
   /**
    * Generate timecode elements from milliseconds.
