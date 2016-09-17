@@ -1,3 +1,5 @@
+'use strict';
+
 var H5P = H5P || {};
 
 /**
@@ -642,7 +644,7 @@ H5P.Timer = function($) {
     var reg_timecode = /((\d+:)?(([0-5])?\d:)?(([0-5])?\d)(\.\d+)?)/;
 
     if ($.type(value) !== 'string') {
-      return;
+      return false;
     }
 
     return value === value.match(reg_timecode)[0] ? true : false;
