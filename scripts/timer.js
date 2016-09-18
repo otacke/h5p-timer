@@ -149,6 +149,7 @@ H5P.Timer = function($) {
       if (!Number.isInteger(time)) {
         return;
       }
+      // notifications only need an update if changing clock against direction
       clockUpdateMilliSeconds = (time - clockTimeMilliSeconds) * mode < 0 ?
         time - clockTimeMilliSeconds : 0;
       clockTimeMilliSeconds = time;
@@ -362,10 +363,10 @@ H5P.Timer = function($) {
       if (!callback instanceof Function) {
         return;
       }
-      // repeat must be >= interval (ideally multiple of interval)
       if ($.type(repeat) === 'string') {
         repeat = Timer.toMilliseconds(repeat);
       }
+      // repeat must be >= interval (ideally multiple of interval)
       if (repeat !== undefined) {
         if (!Number.isInteger(repeat)) {
           return;
@@ -399,11 +400,11 @@ H5P.Timer = function($) {
     };
 
     /**
-     * sets a new starting time for notifications
+     * Set a new starting time for notifications.
      *
      * @private
-     * @param elements {Object] elements - The notifications to be updated
-     * @param deltaMilliSeconds {Number} - The time difference to be set
+     * @param elements {Object] elements - The notifications to be updated.
+     * @param deltaMilliSeconds {Number} - The time difference to be set.
      */
     var updateNotificationTime = function updateNotificationTime(elements,
       deltaMilliSeconds) {
@@ -455,6 +456,8 @@ H5P.Timer = function($) {
           // remove notification
           self.clearNotification(element.id);
 
+          // You could use updateNotificationTime() here, but waste some time
+
           // rebuild notification if it should be repeated
           if (element.repeat) {
             notify(element.id, element.type, self.getTime(element.type) +
@@ -494,7 +497,7 @@ H5P.Timer = function($) {
     days = Math.floor(hours / 24);
     weeks = Math.floor(days / 7);
     month = Math.floor(days / 30.4375); // roughly (30.4375 = mean of 4 years)
-    years = Math.floor(days / 365); // roughly
+    years = Math.floor(days / 365); // roughly (no leap years considered)
     return {
       years: years,
       month: month,
@@ -563,6 +566,7 @@ H5P.Timer = function($) {
   Timer.toTimecode = function(milliSeconds) {
     var timecodeElements = null;
     var timecode = '';
+
     var minutes = 0;
     var seconds = 0;
 
@@ -611,7 +615,7 @@ H5P.Timer = function($) {
       return;
     }
 
-    // We can now be sure everything can be converted to a legit integer in range
+    // thx to the regexp we know everything can be converted to a legit integer in range
     head = timecode.split('.')[0].split(':');
     while (head.length < 3) {
       head = ['0'].concat(head);
