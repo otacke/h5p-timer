@@ -7,7 +7,7 @@ var H5P = H5P || {};
  *
  * @param {H5P.jQuery} $
  */
-H5P.Timer = function($) {
+H5P.Timer = (function($, EventDispatcher) {
   /**
    * Create a timer.
    * @constructor
@@ -19,6 +19,9 @@ H5P.Timer = function($) {
       Timer.DEFAULT_INTERVAL : arguments[0];
 
     var self = this;
+
+    // Inheritance
+    H5P.EventDispatcher.call(self);
 
     // time on clock and the time the clock has run
     var clockTimeMilliSeconds = 0;
@@ -174,6 +177,7 @@ H5P.Timer = function($) {
 
       notifications = [];
       notificationsIdCounter = 0;
+      self.trigger('reset');
     };
 
     /**
@@ -203,6 +207,7 @@ H5P.Timer = function($) {
       }
       startDate = new Date();
       status = Timer.PLAYING;
+      self.trigger('play');
       update();
     };
 
@@ -216,6 +221,7 @@ H5P.Timer = function($) {
         return;
       }
       status = Timer.PAUSED;
+      self.trigger('pause');
     };
 
     /**
@@ -229,6 +235,7 @@ H5P.Timer = function($) {
       }
       lastDate = new Date();
       status = Timer.STOPPED;
+      self.trigger('stop');
     };
 
     /**
@@ -469,6 +476,10 @@ H5P.Timer = function($) {
     };
   }
 
+  // Inheritance
+  Timer.prototype = Object.create(H5P.EventDispatcher.prototype);
+  Timer.prototype.constructor = Timer;
+
   /**
    * Generate timecode elements from milliseconds.
    *
@@ -678,4 +689,4 @@ H5P.Timer = function($) {
   Timer.TYPE_RUNNING = 2;
 
   return Timer;
-}(H5P.jQuery);
+}) (H5P.jQuery, H5P.EventDispatcher);
