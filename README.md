@@ -16,6 +16,7 @@ The timer is not intended for time critical applications, but it can easily be u
   - notification at a particular point in time
   - notification after a certain time period has passed
   - recurring notifications in fixed intervals
+- dispatches events for play, pause, stop and reset
 - offers some static utility functions
   - check if something is a timecode
   - convert timecodes to milliseconds and vice versa
