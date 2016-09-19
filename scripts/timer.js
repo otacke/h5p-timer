@@ -20,9 +20,6 @@ H5P.Timer = (function($, EventDispatcher) {
 
     var self = this;
 
-    // Inheritance
-    H5P.EventDispatcher.call(self);
-
     // time on clock and the time the clock has run
     var clockTimeMilliSeconds = 0;
     var playingTimeMilliSeconds = 0;
@@ -49,6 +46,9 @@ H5P.Timer = (function($, EventDispatcher) {
 
     // counter for notifications;
     var notificationsIdCounter = 0;
+
+    // Inheritance
+    H5P.EventDispatcher.call(self);
 
     /**
      * Get the timer status.
