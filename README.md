@@ -30,36 +30,52 @@ The timer is not intended for time critical applications, but it can easily be u
 
 #### Configuration and setting
 `Timer():Timer`
+
 `setMode(direction:Number)`
+
 `setClockTime(time:Number)`
 
 #### Interactions
 `play()`
+
 `pause()`
+
 `stop()`
+
 `reset()`
 
 #### Information
 `getStatus():Number`
+
 `getMode():Number`
+
 `getTime():Number`
 
 #### Notifications
 `notifyAt(type:Number, calltime:String|Number, callback:Function, params:Object):Number`
+
 `notifyIn(type:Number, time:String:Number, callback:Function, params:Object):Number`
+
 `notifyEvery(type:Number, startTime:String|Number, repeat:String|Number, callback:Function, params:Object):Number`
+
 `clearNotification(id:Number)`
 
 #### Utility Functions
 `extractTimeElement(time:Number, element:String):Number`
+
 `toTimecode(milliSeconds:Number):String`
+
 `toMilliseconds(timecode:String):Number`
+
 `isTimecode(value:String):Boolean`
 
 ### Events
 `play`
+
 `pause`
+
 `stop`
+
 `reset`
 
 ## License
