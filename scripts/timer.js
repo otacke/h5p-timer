@@ -73,7 +73,6 @@ H5P.Timer = (function($, EventDispatcher) {
     /**
      * Get the time that's on the clock.
      *
-     * @public
      * @private
      * @return {number} The time on the clock.
      */
