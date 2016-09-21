@@ -50,6 +50,14 @@ H5P.Timer = (function($, EventDispatcher) {
     // Inheritance
     H5P.EventDispatcher.call(self);
 
+    // sanitize interval
+    if (Number.isInteger(interval)) {
+      interval = Math.max(interval, 1);
+    }
+    else {
+      interval = Timer.DEFAULT_INTERVAL;
+    }
+
     /**
      * Get the timer status.
      *
