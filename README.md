@@ -29,67 +29,67 @@ The timer is not intended for time critical applications, but it can easily be u
 ### Functions
 
 #### Configuration and setup
-`Timer():Timer`
+**`Timer():Timer`**
 
 Creates a Timer with three different counters.
 
 There's an optional `interval` paramter that is set to 10 milliseconds (`Timer.DEFAULT_INTERVAL`) by default. It indicates the interval for updating the counters.
 
-`setMode(direction:Number):Void`
+**`setMode(direction:Number):Void`**
 
 Sets the mode or direction for the clock counter. Possible values for the `direction` parameter are:
 
 * 1 (`Timer.FORWARD`)
 * -1 (`Timer.BACKWARD`)
 
-`setClockTime(time:String|Number):Void`
+**`setClockTime(time:String|Number):Void`**
     
 Sets the clock counter to a particular position. For example, this can be used to setup a countdown. Setting the clock is also possible while the timer is playing. This could e.g. be used for giving a time bonus to a player or something similar.
   
 The `time` parameter can either be milliseconds or a timecode.
 
 #### Interactions
-`play():Void`
+**`play():Void`**
 
-`pause():Void`
+**`pause():Void`**
 
-`stop():Void`
+**`stop():Void`**
 
-`reset():Void`
+**`reset():Void`**
 
 #### Information
-`getStatus():Number`
+**`getStatus():Number`**
 
-`getMode():Number`
+**`getMode():Number`**
 
-`getTime():Number`
+**`getTime():Number`**
 
 #### Notifications
-`notifyAt(type:Number, calltime:String|Number, callback:Function, params:Object):Number`
+**`notifyAt(type:Number, calltime:String|Number, callback:Function, params:Object):Number`**
 
-`notifyIn(type:Number, time:String:Number, callback:Function, params:Object):Number`
+**`notifyIn(type:Number, time:String:Number, callback:Function, params:Object):Number`**
 
-`notifyEvery(type:Number, startTime:String|Number, repeat:String|Number, callback:Function, params:Object):Number`
+**`notifyEvery(type:Number, startTime:String|Number, repeat:String|Number, callback:Function, params:Object):Number`**
 
-`clearNotification(id:Number)`
+**`clearNotification(id:Number)`**
 
 #### Utility Functions
-`extractTimeElement(time:Number, element:String):Number`
+**`extractTimeElement(time:Number, element:String):Number`**
 
-`toTimecode(milliSeconds:Number):String`
+**`toTimecode(milliSeconds:Number):String`**
 
-`toMilliseconds(timecode:String):Number`
+**`toMilliseconds(timecode:String):Number`**
 
-`isTimecode(value:String):Boolean`
+**`isTimecode(value:String):Boolean`**
 
 ### Events
-`play`
+**`play`**
 
-`pause`
+**`pause`**
 
-`stop`
+**`stop`**
 
-`reset`
+**`reset`**
 
 ## License
 
