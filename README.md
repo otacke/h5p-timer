@@ -51,11 +51,19 @@ The `time` parameter can either be milliseconds or a timecode.
 #### Interactions
 **`play():Void`**
 
+Starts all counters or restarts clock counter and playing counter them after being paused. The event `play` will be dispatched.
+
 **`pause():Void`**
+
+Pauses clock counter and playing counter. The event `pause` will be dispatched.
 
 **`stop():Void`**
 
+Stops all counters including the running counter. The event `stop` will be dispatched.
+
 **`reset():Void`**
+
+Resets all counters to their default values and removes all notifications. The timer's mode/direction will not be changed though. The event `reset` will be dispatched.
 
 #### Information
 **`getStatus():Number`**
