@@ -39,8 +39,8 @@ There's an optional `interval` paramter that is set to 10 milliseconds (`Timer.D
 
 Sets the mode or direction for the clock counter. Possible values for the `direction` parameter are:
 
-* 1 (`Timer.FORWARD`)
-* -1 (`Timer.BACKWARD`)
+- -1 (`Timer.BACKWARD`)
+- 1 (`Timer.FORWARD`)
 
 **`setClockTime(time:String|Number):Void`**
     
@@ -68,9 +68,27 @@ Resets all counters to their default values and removes all notifications. The t
 #### Information
 **`getStatus():Number`**
 
+Gets the current status of the timer. The return value can be:
+
+- 0 (`Timer.STOPPED`)
+- 1 (`Timer.RUNNING`)
+- 2 (`Timer.PAUSED`)
+
 **`getMode():Number`**
 
+Get the current mode that the timer is set to. Return value can be:
+
+- -1 (`Timer.BACKWARD`)
+- 1 (`Timer.FORWARD`)
+
 **`getTime():Number`**
+Get the current time in milliseconds that is on a counter. By default, the time on the clock counter will be returned. An optional parameter `type` can be given to specify the counter. It accepts:
+
+- 0 (`Timer.TYPE_CLOCK`)
+- 1 (`Timer.TYPE_PLAYING`)
+- 2 (`Timer.TYPE_RUNNING`)
+
+If the parameter `type` is not an integer, `undefined` will be returned.
 
 #### Notifications
 **`notifyAt(type:Number, calltime:String|Number, callback:Function, params:Object):Number`**
