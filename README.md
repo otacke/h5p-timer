@@ -104,11 +104,23 @@ If the parameter `type` is not an integer, `undefined` will be returned.
 #### Utility Functions
 **`extractTimeElement(time:Number, element:String):Number`**
 
+Retrieves an element from a timecode / time such as days or minutes. This could be useful when you are in need of a diffent format than a timecode for displaying elapsed or remaining time. Mandatory arguments are `time` in milliseconds or as timecode and the `element` to be retrived (years, month, weeks, days, hours, minutes, seconds, or tenthSeconds).
+
+You can also set an optional parameter `rounded` that is set to false by default. If set to true, you will not get the time element floored, but rounded. This could be useful if you want to use just one element to show the time that has passed.
+
+If the function doesn't receive valid parameters, it will return `undefined`.
+
 **`toTimecode(milliSeconds:Number):String`**
+
+Converts milliseconds to timecode. Will return `undefined` if `milliSeconds` is smaller than zero or not even an integer.
 
 **`toMilliseconds(timecode:String):Number`**
 
+Converts a timecode to milliseconds. Will return `undefined` if no valid timecode is given.
+
 **`isTimecode(value:String):Boolean`**
+
+Checks whether a given string is a timecode or not and will return `true` or `false`. Will return `undefined` if the given value is not a string.
 
 ### Events
 **`play`**
