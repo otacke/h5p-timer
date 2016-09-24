@@ -4,6 +4,7 @@ General purpose timer that can be used by other H5P libraries.
 
 The timer is not intended for time critical applications, but it can easily be used to keep track of time in games, to set a time limit for tasks, or to create other innovative content libraries that need triggers based on time. What about a mod-player that can handle ProTracker files for example? ;-)
 
+
 ## Features
 - can count up and down
 - can use milliseconds internally but only "displays" tenths of seconds and above
@@ -21,6 +22,7 @@ The timer is not intended for time critical applications, but it can easily be u
   - check if something is a timecode
   - convert timecodes to milliseconds and vice versa
   - extract single time elements like days or seconds from timecode or milliseconds
+
 
 ## How you can use it
 
@@ -111,11 +113,20 @@ If the parameter `type` is not an integer, `undefined` will be returned.
 ### Events
 **`play`**
 
+Triggered when `play` is called.
+
 **`pause`**
+
+Triggered when `pause` is called.
 
 **`stop`**
 
+Triggered when `stop` is called. This means it is also triggered when the clock counter reaches 0 while counting down.
+
 **`reset`**
+
+Triggered when `reset` is called.
+
 
 ## License
 
