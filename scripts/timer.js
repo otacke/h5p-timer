@@ -591,6 +591,9 @@ H5P.Timer = (function($, EventDispatcher) {
     if (!Number.isInteger(milliSeconds)) {
       return;
     }
+    if (milliSeconds < 0) {
+      return;
+    }
 
     timecodeElements = toTimecodeElements(milliSeconds);
     minutes = Math.floor(timecodeElements['minutes'] % 60);
