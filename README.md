@@ -95,11 +95,50 @@ If the parameter `type` is not an integer, `undefined` will be returned.
 #### Notifications
 **`notifyAt(type:Number, calltime:String|Number, callback:Function, params:Object):Number`**
 
+Make the timer trigger a callback function at a certain point in time on a counter of your choice. It will return a unique id to identify the notification later if necessary.
+
+The function expects:
+- `type` of the counter to trigger the notification (`Timer.TYPE_CLOCK`, `Timer.TYPE_PLAYING` or `Timer.TYPE_RUNNING`)
+- `calltime` the time when the notification shall be triggered in milliseconds or as a timecode
+- `callback` the callback function to be notified
+- `params` the parameters for the callback function which may be undefined
+
+The notification will be triggered if the counter reaches the `calltime`. It will also trigger if the `calltime` lies in the past (if going forward) or in the future (if going backwards). This can be relevant when setting the clock counter manually.
+
+The function will return `undefined` if `type` cannot be set correctly, `calltime` is neither a timecode nor time in milliseconds, or if `callback` is not a function.
+
 **`notifyIn(type:Number, time:String:Number, callback:Function, params:Object):Number`**
+
+Make the timer trigger a callback function after a certain period of time has passed on the counter of your choice. It will return a unique id to identify the notification later if necessary.
+
+The function expects:
+- `type` of the counter to trigger the notification (`Timer.TYPE_CLOCK`, `Timer.TYPE_PLAYING` or `Timer.TYPE_RUNNING`)
+- `time` the time period after the notification should trigger in milliseconds or as a timecode
+- `callback` the callback function to be notified
+- `params` the parameters for the callback function which may be undefined
+
+The notification will calculate the absolute `calltime` immediately, so it might actually trigger before or after the time period has actually passed if the clock counter was changed meanwhile.
+
+The function will return `undefined` if `type` cannot be set correctly, `time` is neither a timecode nor time in milliseconds, or if `callback` is not a function.
 
 **`notifyEvery(type:Number, startTime:String|Number, repeat:String|Number, callback:Function, params:Object):Number`**
 
+Make the timer trigger a callback function in regular intervals starting from a particular point in time. It will return a unique id to identify the notification later if necessary.
+
+The function expects:
+- `type` of the counter to trigger the notification (`Timer.TYPE_CLOCK`, `Timer.TYPE_PLAYING` or `Timer.TYPE_RUNNING`)
+- `startTime` the time for first triggering in milliseconds or as a timecode
+- `repeat` the time interval for repeated triggering in milliseconds or as a timecode
+- `callback` the callback function to be notified
+- `params` the parameters for the callback function which may be undefined
+
+The `repeat` interval will never be smaller than the `interval` paramter set when creating the timer.
+
+The function will return `undefined` if `type` cannot be set correctly, `time` is neither a timecode nor time in milliseconds, or if `callback` is not a function.
+
 **`clearNotification(id:Number)`**
+
+Deletes a notification. The notification is identified by the `id` that was obtained from one of the notification functions.
 
 #### Utility Functions
 **`extractTimeElement(time:Number, element:String):Number`**
