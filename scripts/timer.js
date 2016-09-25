@@ -368,6 +368,9 @@ H5P.Timer = (function($, EventDispatcher) {
       if (!Number.isInteger(type)) {
         return;
       }
+      if (type < Timer.TYPE_CLOCK || type > Timer.TYPE_RUNNING) {
+        return;
+      }
       if ($.type(calltime) === 'string') {
         calltime = Timer.toMilliseconds(calltime);
       }
