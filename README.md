@@ -70,32 +70,32 @@ The `time` parameter can either be milliseconds or a timecode.
 
 Starts all counters or restarts clock counter and playing counter them after being paused. The event `play` will be dispatched.
 
-*Examples*
-- `myTimer.play();`will start to play the timer.
+*Example*
+- `myTimer.play();` will start to play the timer.
 
 
 **`pause():Void`**
 
 Pauses clock counter and playing counter. The event `pause` will be dispatched.
 
-*Examples*
-- `myTimer.pause();`will pause the clock counter and the playing counter. The timer or the running counter will still be active though.
+*Example*
+- `myTimer.pause();` will pause the clock counter and the playing counter. The timer or the running counter will still be active though.
 
 
 **`stop():Void`**
 
 Stops all counters including the running counter. The event `stop` will be dispatched.
 
-*Examples*
-- `myTimer.stop();`will stop all counters.
+*Example*
+- `myTimer.stop();` will stop all counters.
 
 
 **`reset():Void`**
 
 Resets all counters to their default values and removes all notifications. The timer's mode/direction will not be changed though. The event `reset` will be dispatched.
 
-*Examples*
-- `myTimer.reset();`will set all counters to 0 and remove all notifications.
+*Example*
+- `myTimer.reset();` will set all counters to 0 and remove all notifications.
 
 
 #### Information
@@ -107,12 +107,20 @@ Gets the current status of the timer. The return value can be:
 - 1 (`Timer.RUNNING`)
 - 2 (`Timer.PAUSED`)
 
+*Example*
+- `console.log(myTimer.getStatus());` will get the status of the timer and show 0, 1 or 2 in the console.
+
+
 **`getMode():Number`**
 
 Get the current mode that the timer is set to. Return value can be:
 
 - -1 (`Timer.BACKWARD`)
 - 1 (`Timer.FORWARD`)
+
+*Example*
+- `console.log(myTimer.getMode());` will get the mode of the timer and show -1 or 1 in the console.
+
 
 **`getTime():Number`**
 Get the current time in milliseconds that is on a counter. By default, the time on the clock counter will be returned. An optional parameter `type` can be given to specify the counter. It accepts:
@@ -122,6 +130,12 @@ Get the current time in milliseconds that is on a counter. By default, the time 
 - 2 (`Timer.TYPE_RUNNING`)
 
 If the parameter `type` is not an integer, `undefined` will be returned.
+
+*Examples*
+- `console.log(getTime());` will output the current time on the clock counter.
+- `console.log(getTime(H5P.Timer.TYPE_RUNNING));` will output the current time on the running counter.
+- `console.log(getTime(1));` will output the current time on the playing counter (although you'd better not use integers as parameters but the constants instead).
+
 
 #### Notifications
 **`notifyAt(type:Number, calltime:String|Number, callback:Function, params:Object):Number`**
