@@ -377,6 +377,9 @@ H5P.Timer = (function($, EventDispatcher) {
       if (!Number.isInteger(calltime)) {
         return;
       }
+      if (calltime < 0) {
+        return;
+      }
       if (!callback instanceof Function) {
         return;
       }
