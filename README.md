@@ -37,6 +37,11 @@ Creates a Timer with three different counters.
 
 There's an optional `interval` paramter that is set to 10 milliseconds (`Timer.DEFAULT_INTERVAL`) by default. It indicates the interval for updating the counters.
 
+*Examples*
+- `myTimer = Timer();` will create a timer that uses the internal default update interval of 10 milliseconds.
+- `myTimer = Timer(100);` will create a timer that uses an internal update interval of 100 milliseconds.
+
+
 **`setMode(direction:Number):Void`**
 
 Sets the mode or direction for the clock counter. Possible values for the `direction` parameter are:
@@ -44,11 +49,21 @@ Sets the mode or direction for the clock counter. Possible values for the `direc
 - -1 (`Timer.BACKWARD`)
 - 1 (`Timer.FORWARD`)
 
+*Examples*
+- `myTimer.setMode(H5P.Timer.BACKWARD);` can be used to set up a countdown than runs backwards or even for changing the direction while the timer is running.
+- `myTimer.setMode(H5P.Timer.FORWARD);` can be used to change the direction of the timer if it had been changed to backwards before.
+
 **`setClockTime(time:String|Number):Void`**
     
 Sets the clock counter to a particular position. For example, this can be used to setup a countdown. Setting the clock is also possible while the timer is playing. This could e.g. be used for giving a time bonus to a player or something similar.
   
 The `time` parameter can either be milliseconds or a timecode.
+
+*Examples*
+- `myTimer.setClockTime('1:30');` will set the clock counter to 1 minute and 30 seconds.*
+- `myTimer.setClockTime('1:23:45.6');` will set the clock counter to 1 hour, 23 minutes, 45 seconds and 6 tenth of seconds.
+- `myTimer.setClockTime(123456);` will set the clock counter 123456 milliseconds which equal 2 minutes, 3 seconds and 5 tenth of seconds (the 456 milliseconds will be rounded).
+
 
 #### Interactions
 **`play():Void`**
