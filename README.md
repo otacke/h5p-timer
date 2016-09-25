@@ -70,17 +70,33 @@ The `time` parameter can either be milliseconds or a timecode.
 
 Starts all counters or restarts clock counter and playing counter them after being paused. The event `play` will be dispatched.
 
+*Examples*
+- `myTimer.play();`will start to play the timer.
+
+
 **`pause():Void`**
 
 Pauses clock counter and playing counter. The event `pause` will be dispatched.
+
+*Examples*
+- `myTimer.pause();`will pause the clock counter and the playing counter. The timer or the running counter will still be active though.
+
 
 **`stop():Void`**
 
 Stops all counters including the running counter. The event `stop` will be dispatched.
 
+*Examples*
+- `myTimer.stop();`will stop all counters.
+
+
 **`reset():Void`**
 
 Resets all counters to their default values and removes all notifications. The timer's mode/direction will not be changed though. The event `reset` will be dispatched.
+
+*Examples*
+- `myTimer.reset();`will set all counters to 0 and remove all notifications.
+
 
 #### Information
 **`getStatus():Number`**
