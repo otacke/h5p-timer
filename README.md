@@ -185,26 +185,54 @@ The function will return `undefined` if `type` cannot be set correctly, `time` i
 
 Deletes a notification. The notification is identified by the `id` that was obtained from one of the notification functions.
 
+
 #### Utility Functions
 **`extractTimeElement(time:String|Number, element:String):Number`**
 
-Retrieves an element from a timecode / time such as days or minutes. This could be useful when you are in need of a diffent format than a timecode for displaying elapsed or remaining time. Mandatory arguments are `time` in milliseconds or as timecode and the `element` to be retrived (years, month, weeks, days, hours, minutes, seconds, or tenthSeconds).
+Retrieves an element from a timecode / time such as the floored total number of days or minutes. Mandatory arguments are `time` in milliseconds or as timecode and the `element` to be retrived (years, month, weeks, days, hours, minutes, seconds, or tenthSeconds).
 
-You can also set an optional parameter `rounded` that is set to false by default. If set to true, you will not get the time element floored, but rounded. This could be useful if you want to use just one element to show the time that has passed.
+You can also set an optional parameter `rounded` that is set to false by default. If set to true, you will not get the time element floored, but rounded.
 
 If the function doesn't receive valid parameters, it will return `undefined`.
+
+*Examples*
+- `console.log(H5P.Timer.extractTimeElement('1:23:45.6', 'minutes'));`will output 83 (1 hour + 23 minutes).
+- `console.log(H5P.Timer.extractTimeElement('1:23:45.6', 'minutes', true));`will output 84 (1 hour + 24 minutes rounded).
+- `console.log(H5P.Timer.extractTimeElement('1:23:45.6', 'days'));` will output 0.
+- `console.log(H5P.Timer.extractTimeElement(1234567890, 'weeks'));` will output 2.
+
 
 **`toTimecode(milliSeconds:Number):String`**
 
 Converts milliseconds to timecode. Will return `undefined` if `milliSeconds` is smaller than zero or not even an integer.
 
+*Examples*
+- `console.log(H5P.Timer.toTimecode(123456));` will output 02:03.5.
+- `console.log(H5P.Timer.toTimecode(123456.1));` will output `undefined`.
+
+
 **`toMilliseconds(timecode:String):Number`**
 
 Converts a timecode to milliseconds. Will return `undefined` if no valid timecode is given.
 
+*Examples*
+- `console.log(H5P.Timer.toMilliseconds('02:03.5'));` will output 123500.
+- `console.log(H5P.Timer.toMilliseconds('1:02'));` will output 62000.
+- `console.log(H5P.Timer.toMilliseconds('1.9'));` will output 1900.
+- `console.log(H5P.Timer.toMilliseconds('123456'));` will output `undefined`.
+
+
 **`isTimecode(value:String):Boolean`**
 
 Checks whether a given string is a timecode or not and will return `true` or `false`. Will return `undefined` if the given value is not a string.
+
+*Examples*
+- `console.log(H5P.Timer.isTimecode('02:03.5'));` will output `true`.
+- `console.log(H5P.Timer.isTimecode('1.9'));` will output `true`.
+- `console.log(H5P.Timer.isTimecode('87:59:43.9'));` will output `true`.
+- `console.log(H5P.Timer.isTimecode('87:01.9'));` will output `false`.
+- `console.log(H5P.Timer.isTimecode('123456'));` will output `false`.
+
 
 ### Events
 **`play`**
