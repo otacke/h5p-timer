@@ -152,7 +152,12 @@ The notification will be triggered if the counter reaches the `calltime`. It wil
 
 The function will return `undefined` if `type` cannot be set correctly, `calltime` is neither a timecode nor time in milliseconds, or if `callback` is not a function.
 
-**`notifyIn(type:Number, time:String:Number, callback:Function, params:Object):Number`**
+*Examples*
+- `id = timer.notifyAt(H5P.Timer.TYPE_CLOCK, '2:00', playTwoMinuteWarning);` will trigger the function `playTwoMinuteWarning()` at 2:00 on the clock counter.
+- `id = timer.notifyAt(H5P.Timer.TYPE_PLAYING, 10000, runTenSeconds, ['foo', bar]);` will trigger the function `runTenSeconds('foo', bar)` at 10 seconds on the playing counter.
+
+
+**`notifyIn(type:Number, time:String|Number, callback:Function, params:Object):Number`**
 
 Make the timer trigger a callback function after a certain period of time has passed on the counter of your choice. It will return a unique id to identify the notification later if necessary.
 
@@ -165,6 +170,11 @@ The function expects:
 The notification will calculate the absolute `calltime` immediately, so it might actually trigger before or after the time period has actually passed if the clock counter was changed meanwhile.
 
 The function will return `undefined` if `type` cannot be set correctly, `time` is neither a timecode nor time in milliseconds, or if `callback` is not a function.
+
+*Examples*
+- `id = timer.notifyIn(H5P.Timer.TYPE_CLOCK, '2:00', beep);` will trigger the function `beep()` as soon as 2 minutes have passed on the clock counter.
+- `id = timer.notifyIn(H5P.Timer.TYPE_RUNNING, 10000, inTenSeconds, ['foo']);` will trigger the function `inTenSeconds('foo')` after 10 seconds have elapsed on the running counter.
+
 
 **`notifyEvery(type:Number, startTime:String|Number, repeat:String|Number, callback:Function, params:Object):Number`**
 
@@ -181,9 +191,17 @@ The `repeat` interval will never be smaller than the `interval` paramter set whe
 
 The function will return `undefined` if `type` cannot be set correctly, `time` is neither a timecode nor time in milliseconds, or if `callback` is not a function.
 
+*Examples*
+- `id = timer.notifyEvery(H5P.Timer.TYPE_CLOCK, 0, '00:01', tick);` will trigger the function `tick()` every second that passes on the clock counter right from the start.
+- `id = timer.notifyIn(H5P.Timer.TYPE_CLOCK, '02:00', 5000, foo, ['bar']);` will trigger the function `foo('bar')` every 5 seconds that pass on the clock counter as of 2 minutes on the counter.
+
+
 **`clearNotification(id:Number)`**
 
 Deletes a notification. The notification is identified by the `id` that was obtained from one of the notification functions.
+
+*Example*
+- `clearNotification(5);`will remove the notification with ID 5.
 
 
 #### Utility Functions
