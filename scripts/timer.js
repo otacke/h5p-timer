@@ -670,7 +670,7 @@ H5P.Timer = (function($, EventDispatcher) {
    */
   Timer.isTimecode = function (value) {
     // Don't insist on leading zeros for minutes and seconds
-    var reg_timecode = /((\d+:)?(([0-5])?\d:)?(([0-5])?\d)(\.\d+)?)/;
+    var reg_timecode = /((((\d+:)?([0-5])?\d:)?([0-5])?\d)(\.\d+)?)/;
 
     if ($.type(value) !== 'string') {
       return false;
