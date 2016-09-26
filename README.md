@@ -186,7 +186,7 @@ The function will return `undefined` if `type` cannot be set correctly, `time` i
 Deletes a notification. The notification is identified by the `id` that was obtained from one of the notification functions.
 
 #### Utility Functions
-**`extractTimeElement(time:Number, element:String):Number`**
+**`extractTimeElement(time:String|Number, element:String):Number`**
 
 Retrieves an element from a timecode / time such as days or minutes. This could be useful when you are in need of a diffent format than a timecode for displaying elapsed or remaining time. Mandatory arguments are `time` in milliseconds or as timecode and the `element` to be retrived (years, month, weeks, days, hours, minutes, seconds, or tenthSeconds).
 
