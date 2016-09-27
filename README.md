@@ -38,16 +38,16 @@ Creates a Timer with three different counters.
 There's an optional `interval` paramter that is set to 10 milliseconds (`Timer.DEFAULT_INTERVAL`) by default. It indicates the interval for updating the counters.
 
 *Examples*
-- `myTimer = Timer();` will create a timer that uses the internal default update interval of 10 milliseconds.
-- `myTimer = Timer(100);` will create a timer that uses an internal update interval of 100 milliseconds.
+- `myTimer = H5P.Timer();` will create a timer that uses the internal default update interval of 10 milliseconds.
+- `myTimer = H5P.Timer(100);` will create a timer that uses an internal update interval of 100 milliseconds.
 
 
 **`setMode(direction:Number):Void`**
 
 Sets the mode or direction for the clock counter. Possible values for the `direction` parameter are:
 
-- -1 (`Timer.BACKWARD`)
-- 1 (`Timer.FORWARD`)
+- -1 (`H5P.Timer.BACKWARD`)
+- 1 (`H5P.Timer.FORWARD`)
 
 *Examples*
 - `myTimer.setMode(H5P.Timer.BACKWARD);` can be used to set up a countdown than runs backwards or even for changing the direction while the timer is running.
@@ -103,9 +103,9 @@ Resets all counters to their default values and removes all notifications. The t
 
 Gets the current status of the timer. The return value can be:
 
-- 0 (`Timer.STOPPED`)
-- 1 (`Timer.RUNNING`)
-- 2 (`Timer.PAUSED`)
+- 0 (`H5P.Timer.STOPPED`)
+- 1 (`H5P.Timer.RUNNING`)
+- 2 (`H5P.Timer.PAUSED`)
 
 *Example*
 - `console.log(myTimer.getStatus());` will get the status of the timer and show 0, 1 or 2 in the console.
@@ -115,8 +115,8 @@ Gets the current status of the timer. The return value can be:
 
 Get the current mode that the timer is set to. Return value can be:
 
-- -1 (`Timer.BACKWARD`)
-- 1 (`Timer.FORWARD`)
+- -1 (`H5P.Timer.BACKWARD`)
+- 1 (`H5P.Timer.FORWARD`)
 
 *Example*
 - `console.log(myTimer.getMode());` will get the mode of the timer and show -1 or 1 in the console.
@@ -125,9 +125,9 @@ Get the current mode that the timer is set to. Return value can be:
 **`getTime():Number`**
 Get the current time in milliseconds that is on a counter. By default, the time on the clock counter will be returned. An optional parameter `type` can be given to specify the counter. It accepts:
 
-- 0 (`Timer.TYPE_CLOCK`)
-- 1 (`Timer.TYPE_PLAYING`)
-- 2 (`Timer.TYPE_RUNNING`)
+- 0 (`H5P.Timer.TYPE_CLOCK`)
+- 1 (`H5P.Timer.TYPE_PLAYING`)
+- 2 (`H5P.Timer.TYPE_RUNNING`)
 
 If the parameter `type` is not an integer, `undefined` will be returned.
 
