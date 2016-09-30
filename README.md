@@ -29,6 +29,12 @@ The timer is not intended for time critical applications, but it can easily be u
 ### First steps
 In this short tutorial, we will create a simple H5P package containing a library to implement a simple stop watch. If you master this example, you will have used most of the functionality and probably won't have trouble using the H5P.Timer for more complicated applications.
 
+**TO DO**
+- Code this myself ;-)
+- Probably split into basic library framework + one part for setup + one part for buttons + one part for the display/notifications
+- Screenshot
+- Move this stuff to the github wiki
+
 ### Functions
 
 #### Configuration and setup
