@@ -607,16 +607,16 @@ H5P.Timer = (function($, EventDispatcher) {
 
     // create timecode
     if (timecodeElements['hours'] > 0) {
-      timecode += timecodeElements['hours'] + ":";
+      timecode += timecodeElements['hours'] + ':';
     }
     if (minutes < 10) {
-      timecode += "0";
+      timecode += '0';
     }
-    timecode += minutes + ":";
+    timecode += minutes + ':';
     if (seconds < 10) {
-      timecode += "0";
+      timecode += '0';
     }
-    timecode += seconds + ".";
+    timecode += seconds + '.';
     timecode += timecodeElements['tenthSeconds'];
 
     return timecode;
