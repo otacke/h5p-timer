@@ -10,8 +10,8 @@ var H5P = H5P || {};
 H5P.Timer = (function($, EventDispatcher) {
   /**
    * Create a timer.
-   * @constructor
    *
+   * @constructor
    * @param {number} [interval=Timer.DEFAULT_INTERVAL] - The update interval.
    */
   function Timer() {
