@@ -573,7 +573,8 @@ H5P.Timer = (function($, EventDispatcher) {
         seconds: Math.round(time / 1000),
         tenthSeconds: Math.round(time / 100)
       };
-    } else {
+    }
+    else {
       timeElements = toTimecodeElements(time);
     }
 
