@@ -291,6 +291,7 @@ H5P.Timer = (function($, EventDispatcher) {
 
     /**
      * Set a notification at a particular point in time.
+     * @TODO: Think about making it easier to read/promise syntax
      *
      * @public
      * @param {number} type - Clock time, Playing time or Running time.
@@ -306,6 +307,7 @@ H5P.Timer = (function($, EventDispatcher) {
 
     /**
      * Set a notification in a particular time distance.
+     * @TODO: Think about making it easier to read/promise syntax
      *
      * @public
      * @param {number} type - Clock time, Playing time or Running time.
@@ -334,6 +336,7 @@ H5P.Timer = (function($, EventDispatcher) {
 
     /**
      * Set a notification repeatedly (starting from a particular point in time).
+     * @TODO: Think about making it easier to read/promise syntax
      *
      * @public
      * @param {number} type - Clock time, Playing time or Running time.
