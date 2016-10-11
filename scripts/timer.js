@@ -302,10 +302,10 @@ H5P.Timer = function ($, EventDispatcher) {
       // common default values for the clock timer
       // TODO: find a better place for this, maybe a JSON file?
       var defaults = {};
-      defaults['every_tenth_second'] = { "type": Timer.TYPE_CLOCK, "repeat": 100 };
-      defaults['every_second'] = { "type": Timer.TYPE_CLOCK, "repeat": 1000 };
-      defaults['every_minute'] = { "type": Timer.TYPE_CLOCK, "repeat": 60000 };
-      defaults['every_hour'] = { "type": Timer.TYPE_CLOCK, "repeat": 3600000 };
+      defaults['every_tenth_second'] = { "repeat": 100 };
+      defaults['every_second'] = { "repeat": 1000 };
+      defaults['every_minute'] = { "repeat": 60000 };
+      defaults['every_hour'] = { "repeat": 3600000 };
 
       // Sanity check for callback function
       if (!callback instanceof Function) {
