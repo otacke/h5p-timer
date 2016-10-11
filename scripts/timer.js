@@ -1,3 +1,5 @@
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var H5P = H5P || {};
 
 /**
@@ -7,7 +9,7 @@ var H5P = H5P || {};
  *
  * @param {H5P.jQuery} $
  */
-H5P.Timer = (function($, EventDispatcher) {
+H5P.Timer = function ($, EventDispatcher) {
   /**
    * Create a timer.
    *
@@ -15,8 +17,7 @@ H5P.Timer = (function($, EventDispatcher) {
    * @param {number} [interval=Timer.DEFAULT_INTERVAL] - The update interval.
    */
   function Timer() {
-    var interval = arguments.length <= 0 || arguments[0] === undefined ?
-      Timer.DEFAULT_INTERVAL : arguments[0];
+    var interval = arguments.length <= 0 || arguments[0] === undefined ? Timer.DEFAULT_INTERVAL : arguments[0];
 
     var self = this;
 
@@ -53,8 +54,7 @@ H5P.Timer = (function($, EventDispatcher) {
     // sanitize interval
     if (Number.isInteger(interval)) {
       interval = Math.max(interval, 1);
-    }
-    else {
+    } else {
       interval = Timer.DEFAULT_INTERVAL;
     }
 
@@ -64,7 +64,7 @@ H5P.Timer = (function($, EventDispatcher) {
      * @public
      * @return {number} The timer status.
      */
-    self.getStatus = function() {
+    self.getStatus = function () {
       return status;
     };
 
@@ -74,7 +74,7 @@ H5P.Timer = (function($, EventDispatcher) {
      * @public
      * @return {number} The timer mode.
      */
-    self.getMode = function() {
+    self.getMode = function () {
       return mode;
     };
 
@@ -110,8 +110,7 @@ H5P.Timer = (function($, EventDispatcher) {
       }
       if (status !== Timer.STOPPED) {
         return new Date().getTime() - firstDate.getTime();
-      }
-      else {
+      } else {
         return !lastDate ? 0 : lastDate.getTime() - firstDate;
       }
     };
@@ -123,9 +122,8 @@ H5P.Timer = (function($, EventDispatcher) {
      * @param {number} [type=Timer.TYPE_CLOCK] - Type of the time to get.
      * @return {number} Clock Time, Playing Time or Running Time.
      */
-    self.getTime = function() {
-      var type = arguments.length <= 0 || arguments[0] === undefined ?
-        Timer.TYPE_CLOCK : arguments[0];
+    self.getTime = function () {
+      var type = arguments.length <= 0 || arguments[0] === undefined ? Timer.TYPE_CLOCK : arguments[0];
 
       if (!Number.isInteger(type)) {
         return;
@@ -152,7 +150,7 @@ H5P.Timer = (function($, EventDispatcher) {
      * @public
      * @param {number} time - The time in milliseconds.
      */
-    self.setClockTime = function(time) {
+    self.setClockTime = function (time) {
       if ($.type(time) === 'string') {
         time = Timer.toMilliseconds(time);
       }
@@ -160,8 +158,7 @@ H5P.Timer = (function($, EventDispatcher) {
         return;
       }
       // notifications only need an update if changing clock against direction
-      clockUpdateMilliSeconds = (time - clockTimeMilliSeconds) * mode < 0 ?
-        time - clockTimeMilliSeconds : 0;
+      clockUpdateMilliSeconds = (time - clockTimeMilliSeconds) * mode < 0 ? time - clockTimeMilliSeconds : 0;
       clockTimeMilliSeconds = time;
     };
 
@@ -170,7 +167,7 @@ H5P.Timer = (function($, EventDispatcher) {
      *
      * @public
      */
-    self.reset = function() {
+    self.reset = function () {
       if (status !== Timer.STOPPED) {
         return;
       }
@@ -193,7 +190,7 @@ H5P.Timer = (function($, EventDispatcher) {
      * @public
      * @param {number} mode - The timer mode.
      */
-    self.setMode = function(direction) {
+    self.setMode = function (direction) {
       if (direction !== Timer.FORWARD && direction !== Timer.BACKWARD) {
         return;
       }
@@ -205,7 +202,7 @@ H5P.Timer = (function($, EventDispatcher) {
      *
      * @public
      */
-    self.play = function() {
+    self.play = function () {
       if (status === Timer.PLAYING) {
         return;
       }
@@ -223,7 +220,7 @@ H5P.Timer = (function($, EventDispatcher) {
      *
      * @public
      */
-    self.pause = function() {
+    self.pause = function () {
       if (status !== Timer.PLAYING) {
         return;
       }
@@ -236,7 +233,7 @@ H5P.Timer = (function($, EventDispatcher) {
      *
      * @public
      */
-    self.stop = function() {
+    self.stop = function () {
       if (status === Timer.STOPPED) {
         return;
       }
@@ -274,7 +271,7 @@ H5P.Timer = (function($, EventDispatcher) {
 
       checkNotifications();
 
-      loop = setTimeout(function() {
+      loop = setTimeout(function () {
         update();
       }, interval);
     };
@@ -290,121 +287,109 @@ H5P.Timer = (function($, EventDispatcher) {
     };
 
     /**
-     * Set a notification at a particular point in time.
-     * @TODO: Think about making it easier to read/promise syntax
+     * Set a notification
      *
      * @public
-     * @param {number} type - Clock time, Playing time or Running time.
-     * @param {number} calltime - Time when notification is triggered.
+     * @param {Object|String} params - Parameters for the notification.
      * @callback callback - Callback function.
-     * @param {Object} params - parameters for the callback function.
-     * @return {number} ID of the notification passed by notify().
+     * @return {number} ID of the notification.
      */
-    self.notifyAt = function(type, calltime, callback, params) {
-      return notify(getNextNotificationId(), type, calltime, undefined,
-        callback, params);
-    };
+    self.notify = function (params, callback) {
+      var id = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : getNextNotificationId();
 
-    /**
-     * Set a notification in a particular time distance.
-     * @TODO: Think about making it easier to read/promise syntax
-     *
-     * @public
-     * @param {number} type - Clock time, Playing time or Running time.
-     * @param {number} time - Time distance for triggering.
-     * @callback callback - Callback function.
-     * @param {Object} params - parameters for the callback function.
-     * @return {number} ID of the notification passed by notify().
-     */
-    self.notifyIn = function(type, time, callback, params) {
-      if ($.type(time) === 'string') {
-        time = Timer.toMilliseconds(time);
-      }
-      if (!Number.isInteger(time)) {
-        return;
-      }
-      time = Math.max(time, interval);
-      if (type === Timer.TYPE_CLOCK) {
-        // clock could be running backwards
-        time *= mode;
-      }
-      time += self.getTime(type);
+      // TODO: change use of commonly used defaults
+      // TODO: clean up the code
+      var EVERY_SECOND = { 'type': Timer.TYPE_CLOCK, 'calltime': 0, 'repeat': 1000 };
 
-      return notify(getNextNotificationId(), type, time, undefined,
-        callback, params);
-    };
-
-    /**
-     * Set a notification repeatedly (starting from a particular point in time).
-     * @TODO: Think about making it easier to read/promise syntax
-     *
-     * @public
-     * @param {number} type - Clock time, Playing time or Running time.
-     * @param {number} startTime - Time for first triggering.
-     * @param {number} repeat - Time interval after which to repeat the notification.
-     * @callback callback - Callback function.
-     * @param {Object} params - parameters for the callback function.
-     * @return {number} ID passed by notify().
-     */
-    self.notifyEvery = function(type, startTime, repeat, callback, params) {
-      if (startTime === undefined) {
-        startTime = self.getTime(type);
-      }
-
-      return notify(getNextNotificationId(), type, startTime, repeat,
-        callback, params);
-    };
-
-    /**
-     * Add a notification.
-     *
-     * @private
-     * @param {number} type - Clock Time, Playing Time or Running Time.
-     * @param {number} calltime - Time when notification is triggered.
-     * @param {number} [repeat] - Time interval after which to repeat the notification.
-     * @callback callback - Callback function.
-     * @param {Object} params - parameters for the callback function.
-     * @return {number} The ID of the notification.
-     */
-    var notify = function notify(id, type, calltime, repeat, callback, params) {
-      //type checks
-      if (!Number.isInteger(type)) {
-        return;
-      }
-      if (type < Timer.TYPE_CLOCK || type > Timer.TYPE_RUNNING) {
-        return;
-      }
-      if ($.type(calltime) === 'string') {
-        calltime = Timer.toMilliseconds(calltime);
-      }
-      if (!Number.isInteger(calltime)) {
-        return;
-      }
-      if (calltime < 0) {
-        return;
-      }
+      // Sanity check for callback
       if (!callback instanceof Function) {
+        console.log('ALERT: callback is not a function!');
         return;
       }
-      if ($.type(repeat) === 'string') {
-        repeat = Timer.toMilliseconds(repeat);
-      }
-      // repeat must be >= interval (ideally multiple of interval)
-      if (repeat !== undefined) {
-        if (!Number.isInteger(repeat)) {
-          return;
+
+      if (params !== null && (typeof params === 'undefined' ? 'undefined' : _typeof(params)) === 'object') {
+        // Sanitize type
+        if (!params.type) {
+          params.type = Timer.TYPE_CLOCK;
+        } else {
+          if (!Number.isInteger(params.type)) {
+            return;
+          }
+          if (params.type < Timer.TYPE_CLOCK || params.type > Timer.TYPE_RUNNING) {
+            return;
+          }
         }
-        repeat = Math.max(repeat, interval);
+
+        // Sanitize mode
+        if (!params.mode) {
+          params.mode = Timer.NOTIFY_ABSOLUTE;
+        } else {
+          if (!Number.isInteger(params.mode)) {
+            return;
+          }
+          if (params.mode < Timer.NOTIFY_ABSOLUTE || params.type > Timer.NOTIFY_RELATIVE) {
+            return;
+          }
+        }
+
+        // Sanitize calltime
+        if (!params.calltime) {
+          params.calltime = params.mode === Timer.NOTIFY_ABSOLUTE ? self.getTime(params.type) : 0;
+        } else {
+          if ($.type(params.calltime) === 'string') {
+            params.calltime = Timer.toMilliseconds(params.calltime);
+          }
+          if (!Number.isInteger(params.calltime)) {
+            return;
+          }
+          if (params.calltime < 0) {
+            return;
+          }
+          if (params.mode === Timer.NOTIFY_RELATIVE) {
+            params.calltime = Math.max(params.calltime, interval);
+            if (params.type === Timer.TYPE_CLOCK) {
+              // clock could be running backwards
+              params.calltime *= mode;
+            }
+            params.calltime += self.getTime(params.type);
+          }
+        }
+
+        // Sanitize repeat
+        if ($.type(params.repeat) === 'string') {
+          params.repeat = Timer.toMilliseconds(params.repeat);
+        }
+        // repeat must be >= interval (ideally multiple of interval)
+        if (params.repeat !== undefined) {
+          if (!Number.isInteger(params.repeat)) {
+            return;
+          }
+          params.repeat = Math.max(params.repeat, interval);
+        }
+      }
+      else if ($.type(params) === 'string') {
+        // check for default values          
+        switch (params) {
+          case 'every_second':
+            params = EVERY_SECOND;
+            break;
+          default:
+            params = undefined;
+        }
+      } else {
+        return;
+      }
+      if (!params) {
+        return;
       }
 
-      // add notification to existing ones
+      // add notification
       notifications.push({
         'id': id,
-        'type': type,
-        'calltime': calltime,
-        'repeat': repeat,
-        'callback': callback,
-        'params': params
+        'type': params.type,
+        'calltime': params.calltime,
+        'repeat': params.repeat,
+        'callback': callback
       });
 
       return id;
@@ -416,8 +401,8 @@ H5P.Timer = (function($, EventDispatcher) {
      * @public
      * @param {number} id - The id of the notification.
      */
-    self.clearNotification = function(id) {
-      notifications = $.grep(notifications, function(item) {
+    self.clearNotification = function (id) {
+      notifications = $.grep(notifications, function (item) {
         return item.id === id;
       }, true);
     };
@@ -429,19 +414,20 @@ H5P.Timer = (function($, EventDispatcher) {
      * @param elements {Object] elements - The notifications to be updated.
      * @param deltaMilliSeconds {Number} - The time difference to be set.
      */
-    var updateNotificationTime = function updateNotificationTime(elements,
-      deltaMilliSeconds) {
+    var updateNotificationTime = function updateNotificationTime(elements, deltaMilliSeconds) {
       if (!Number.isInteger(deltaMilliSeconds)) {
         return;
       }
-      elements.forEach(function(element) {
+      elements.forEach(function (element) {
         // remove notification
         self.clearNotification(element.id);
 
         //rebuild notification with new data
-        notify(element.id, element.type, self.getTime(element.type) +
-          deltaMilliSeconds, element.repeat, element.callback,
-          element.params);
+        self.notify({
+          'type': element.type,
+          'calltime': self.getTime(element.type) + deltaMilliSeconds,
+          'repeat': element.repeat
+        }, element.callback, element.id);
       });
     };
 
@@ -456,25 +442,23 @@ H5P.Timer = (function($, EventDispatcher) {
 
       // update recurring clock notifications if clock was changed
       if (clockUpdateMilliSeconds !== 0) {
-        elements = $.grep(notifications, function(item) {
-          return item.type === Timer.TYPE_CLOCK && item.repeat !=
-            undefined;
+        elements = $.grep(notifications, function (item) {
+          return item.type === Timer.TYPE_CLOCK && item.repeat != undefined;
         });
         updateNotificationTime(elements, clockUpdateMilliSeconds);
         clockUpdateMilliSeconds = 0;
       }
 
       // check all notifications for triggering
-      notifications.forEach(function(element) {
+      notifications.forEach(function (element) {
         /*
          * trigger if notification time is in the past
          * which means calltime >= Clock Time if mode is BACKWARD (= -1)
          */
         backwards = element.type === Timer.TYPE_CLOCK ? mode : 1;
-        if (element.calltime * backwards <= self.getTime(element.type) *
-          backwards) {
+        if (element.calltime * backwards <= self.getTime(element.type) * backwards) {
           // notify callback function
-          element.callback.apply(this, element.params);
+          element.callback.apply(this);
 
           // remove notification
           self.clearNotification(element.id);
@@ -483,9 +467,11 @@ H5P.Timer = (function($, EventDispatcher) {
 
           // rebuild notification if it should be repeated
           if (element.repeat) {
-            notify(element.id, element.type, self.getTime(element.type) +
-              element.repeat * backwards, element.repeat, element.callback,
-              element.params);
+            self.notify({
+              'type': element.type,
+              'calltime': self.getTime(element.type) + element.repeat * backwards,
+              'repeat': element.repeat
+            }, element.callback, element.id);
           }
         }
       });
@@ -546,9 +532,8 @@ H5P.Timer = (function($, EventDispatcher) {
    * @param {boolean} [rounded=false] - If true, element value will be rounded.
    * @return {number} The time element.
    */
-  Timer.extractTimeElement = function(time, element) {
-    var rounded = arguments.length <= 2 || arguments[2] === undefined ?
-      false : arguments[2];
+  Timer.extractTimeElement = function (time, element) {
+    var rounded = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
     var timeElements = null;
 
@@ -576,8 +561,7 @@ H5P.Timer = (function($, EventDispatcher) {
         seconds: Math.round(time / 1000),
         tenthSeconds: Math.round(time / 100)
       };
-    }
-    else {
+    } else {
       timeElements = toTimecodeElements(time);
     }
 
@@ -591,7 +575,7 @@ H5P.Timer = (function($, EventDispatcher) {
    * @param {number} milliSeconds - The time in milliSeconds.
    * @return {string} The humanized timecode.
    */
-  Timer.toTimecode = function(milliSeconds) {
+  Timer.toTimecode = function (milliSeconds) {
     var timecodeElements = null;
     var timecode = '';
 
@@ -633,7 +617,7 @@ H5P.Timer = (function($, EventDispatcher) {
    * @param {string} timecode - The timecode.
    * @return {number} Milliseconds derived from timecode
    */
-  Timer.toMilliseconds = function(timecode) {
+  Timer.toMilliseconds = function (timecode) {
     var head = [];
     var tail = '';
 
@@ -657,12 +641,10 @@ H5P.Timer = (function($, EventDispatcher) {
 
     tail = timecode.split('.')[1];
     if (tail) {
-      tenthSeconds = Math.round(parseInt(tail) / Math.pow(10, tail.length -
-        1));
+      tenthSeconds = Math.round(parseInt(tail) / Math.pow(10, tail.length - 1));
     }
 
-    return (hours * 36000 + minutes * 600 + seconds * 10 + tenthSeconds) *
-      100;
+    return (hours * 36000 + minutes * 600 + seconds * 10 + tenthSeconds) * 100;
   };
 
   /**
@@ -699,7 +681,7 @@ H5P.Timer = (function($, EventDispatcher) {
   /** @constant {number} */
   Timer.DEFAULT_INTERVAL = 10;
 
-  // Notification types
+  // Counter types
   /** @constant {number} */
   Timer.TYPE_CLOCK = 0;
   /** @constant {number} */
@@ -707,5 +689,11 @@ H5P.Timer = (function($, EventDispatcher) {
   /** @constant {number} */
   Timer.TYPE_RUNNING = 2;
 
+  // Notification types
+  /** @constant {number} */
+  Timer.NOTIFY_ABSOLUTE = 0;
+  /** @constant {number} */
+  Timer.NOTIFY_RELATIVE = 1;
+
   return Timer;
-}) (H5P.jQuery, H5P.EventDispatcher);
+}(H5P.jQuery, H5P.EventDispatcher);
