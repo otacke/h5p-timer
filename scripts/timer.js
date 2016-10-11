@@ -54,7 +54,8 @@ H5P.Timer = function ($, EventDispatcher) {
     // sanitize interval
     if (Number.isInteger(interval)) {
       interval = Math.max(interval, 1);
-    } else {
+    }
+    else {
       interval = Timer.DEFAULT_INTERVAL;
     }
 
@@ -110,7 +111,8 @@ H5P.Timer = function ($, EventDispatcher) {
       }
       if (status !== Timer.STOPPED) {
         return new Date().getTime() - firstDate.getTime();
-      } else {
+      }
+      else {
         return !lastDate ? 0 : lastDate.getTime() - firstDate;
       }
     };
@@ -297,13 +299,15 @@ H5P.Timer = function ($, EventDispatcher) {
     self.notify = function (params, callback) {
       var id = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : getNextNotificationId();
 
-      // TODO: change use of commonly used defaults
-      // TODO: clean up the code
-      var EVERY_SECOND = { 'type': Timer.TYPE_CLOCK, 'calltime': 0, 'repeat': 1000 };
+      // common default values for the clock timer
+      var defaults = {};
+      defaults['every_tenth_second'] = { 'type': Timer.TYPE_CLOCK, 'calltime': 0, 'repeat': 100 };
+      defaults['every_second'] = { 'type': Timer.TYPE_CLOCK, 'calltime': 0, 'repeat': 1000 };
+      defaults['every_minute'] = { 'type': Timer.TYPE_CLOCK, 'calltime': 0, 'repeat': 60000 };
+      defaults['every_hour'] = { 'type': Timer.TYPE_CLOCK, 'calltime': 0, 'repeat': 3600000 };
 
-      // Sanity check for callback
+      // Sanity check for callback function
       if (!callback instanceof Function) {
-        console.log('ALERT: callback is not a function!');
         return;
       }
 
@@ -311,7 +315,8 @@ H5P.Timer = function ($, EventDispatcher) {
         // Sanitize type
         if (!params.type) {
           params.type = Timer.TYPE_CLOCK;
-        } else {
+        }
+        else {
           if (!Number.isInteger(params.type)) {
             return;
           }
@@ -323,7 +328,8 @@ H5P.Timer = function ($, EventDispatcher) {
         // Sanitize mode
         if (!params.mode) {
           params.mode = Timer.NOTIFY_ABSOLUTE;
-        } else {
+        }
+        else {
           if (!Number.isInteger(params.mode)) {
             return;
           }
@@ -335,7 +341,8 @@ H5P.Timer = function ($, EventDispatcher) {
         // Sanitize calltime
         if (!params.calltime) {
           params.calltime = params.mode === Timer.NOTIFY_ABSOLUTE ? self.getTime(params.type) : 0;
-        } else {
+        }
+        else {
           if ($.type(params.calltime) === 'string') {
             params.calltime = Timer.toMilliseconds(params.calltime);
           }
@@ -368,18 +375,13 @@ H5P.Timer = function ($, EventDispatcher) {
         }
       }
       else if ($.type(params) === 'string') {
-        // check for default values          
-        switch (params) {
-          case 'every_second':
-            params = EVERY_SECOND;
-            break;
-          default:
-            params = undefined;
+        params = defaults[params];
+        if (!params) {
+          return;
         }
-      } else {
-        return;
       }
-      if (!params) {
+      else {
+        // neither object nor string
         return;
       }
 
@@ -561,7 +563,8 @@ H5P.Timer = function ($, EventDispatcher) {
         seconds: Math.round(time / 1000),
         tenthSeconds: Math.round(time / 100)
       };
-    } else {
+    }
+    else {
       timeElements = toTimecodeElements(time);
     }
 
