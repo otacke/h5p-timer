@@ -667,6 +667,11 @@ H5P.Timer = function ($, EventDispatcher) {
     return value === value.match(reg_timecode)[0] ? true : false;
   };
 
+  // Polyfill for IE and potentially other browsers
+  Number.isInteger = Number.isInteger || function(value) {
+    return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+  };
+
   // Timer states
   /** @constant {number} */
   Timer.STOPPED = 0;
