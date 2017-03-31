@@ -52,7 +52,7 @@ H5P.Timer = function ($, EventDispatcher) {
     H5P.EventDispatcher.call(self);
 
     // sanitize interval
-    if (Number.isInteger(interval)) {
+    if (Timer.isInteger(interval)) {
       interval = Math.max(interval, 1);
     }
     else {
@@ -127,7 +127,7 @@ H5P.Timer = function ($, EventDispatcher) {
     self.getTime = function () {
       var type = arguments.length <= 0 || arguments[0] === undefined ? Timer.TYPE_CLOCK : arguments[0];
 
-      if (!Number.isInteger(type)) {
+      if (!Timer.isInteger(type)) {
         return;
       }
       // break will never be reached, but for consistency...
@@ -156,7 +156,7 @@ H5P.Timer = function ($, EventDispatcher) {
       if ($.type(time) === 'string') {
         time = Timer.toMilliseconds(time);
       }
-      if (!Number.isInteger(time)) {
+      if (!Timer.isInteger(time)) {
         return;
       }
       // notifications only need an update if changing clock against direction
@@ -323,7 +323,7 @@ H5P.Timer = function ($, EventDispatcher) {
           params.type = Timer.TYPE_CLOCK;
         }
         else {
-          if (!Number.isInteger(params.type)) {
+          if (!Timer.isInteger(params.type)) {
             return;
           }
           if (params.type < Timer.TYPE_CLOCK || params.type > Timer.TYPE_RUNNING) {
@@ -336,7 +336,7 @@ H5P.Timer = function ($, EventDispatcher) {
           params.mode = Timer.NOTIFY_ABSOLUTE;
         }
         else {
-          if (!Number.isInteger(params.mode)) {
+          if (!Timer.isInteger(params.mode)) {
             return;
           }
           if (params.mode < Timer.NOTIFY_ABSOLUTE || params.type > Timer.NOTIFY_RELATIVE) {
@@ -352,7 +352,7 @@ H5P.Timer = function ($, EventDispatcher) {
           if ($.type(params.calltime) === 'string') {
             params.calltime = Timer.toMilliseconds(params.calltime);
           }
-          if (!Number.isInteger(params.calltime)) {
+          if (!Timer.isInteger(params.calltime)) {
             return;
           }
           if (params.calltime < 0) {
@@ -374,7 +374,7 @@ H5P.Timer = function ($, EventDispatcher) {
         }
         // repeat must be >= interval (ideally multiple of interval)
         if (params.repeat !== undefined) {
-          if (!Number.isInteger(params.repeat)) {
+          if (!Timer.isInteger(params.repeat)) {
             return;
           }
           params.repeat = Math.max(params.repeat, interval);
@@ -417,7 +417,7 @@ H5P.Timer = function ($, EventDispatcher) {
      * @param deltaMilliSeconds {Number} - The time difference to be set.
      */
     var updateNotificationTime = function updateNotificationTime(elements, deltaMilliSeconds) {
-      if (!Number.isInteger(deltaMilliSeconds)) {
+      if (!Timer.isInteger(deltaMilliSeconds)) {
         return;
       }
       elements.forEach(function (element) {
@@ -501,7 +501,7 @@ H5P.Timer = function ($, EventDispatcher) {
     var seconds = 0;
     var tenthSeconds = 0;
 
-    if (!Number.isInteger(milliSeconds)) {
+    if (!Timer.isInteger(milliSeconds)) {
       return;
     }
     milliSeconds = Math.round(milliSeconds / 100);
@@ -542,7 +542,7 @@ H5P.Timer = function ($, EventDispatcher) {
     if ($.type(time) === 'string') {
       time = Timer.toMilliseconds(time);
     }
-    if (!Number.isInteger(time)) {
+    if (!Timer.isInteger(time)) {
       return;
     }
     if ($.type(element) !== 'string') {
@@ -585,7 +585,7 @@ H5P.Timer = function ($, EventDispatcher) {
     var minutes = 0;
     var seconds = 0;
 
-    if (!Number.isInteger(milliSeconds)) {
+    if (!Timer.isInteger(milliSeconds)) {
       return;
     }
     if (milliSeconds < 0) {
@@ -667,8 +667,8 @@ H5P.Timer = function ($, EventDispatcher) {
     return value === value.match(reg_timecode)[0] ? true : false;
   };
 
-  // Polyfill for IE and potentially other browsers
-  Number.isInteger = Number.isInteger || function(value) {
+  // Workaround for IE and potentially other browsers within Timer object
+  Timer.isInteger = Timer.isInteger || function(value) {
     return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
   };
 
