@@ -183,7 +183,7 @@ H5P.Timer = function ($, EventDispatcher) {
 
       notifications = [];
       notificationsIdCounter = 0;
-      self.trigger('reset');
+      self.trigger('reset', {}, {bubbles: true, external: true});
     };
 
     /**
@@ -213,7 +213,7 @@ H5P.Timer = function ($, EventDispatcher) {
       }
       startDate = new Date();
       status = Timer.PLAYING;
-      self.trigger('play');
+      self.trigger('play', {}, {bubbles: true, external: true});
       update();
     };
 
@@ -227,7 +227,7 @@ H5P.Timer = function ($, EventDispatcher) {
         return;
       }
       status = Timer.PAUSED;
-      self.trigger('pause');
+      self.trigger('pause', {}, {bubbles: true, external: true});
     };
 
     /**
@@ -241,7 +241,7 @@ H5P.Timer = function ($, EventDispatcher) {
       }
       lastDate = new Date();
       status = Timer.STOPPED;
-      self.trigger('stop');
+      self.trigger('stop', {}, {bubbles: true, external: true});
     };
 
     /**
